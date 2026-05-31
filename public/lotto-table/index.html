@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또 번호 흐름 분석</title>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --head: #f1f3f5;
+      --accent: #111827;
+      --hit: #fff3b0;
+      --match: #ffe600;
+      --bonus: #d7dbe2;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .back-link {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 14px;
+      background: #111827;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 12px 24px rgba(17, 24, 39, 0.2);
+    }
+
+    .back-link:hover {
+      background: #374151;
+    }
+
+    .wrap {
+      max-width: 1240px;
+      margin: 36px auto;
+      padding: 0 18px 60px;
+    }
+
+    .top {
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+    }
+
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      margin: 18px 0 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      color: #374151;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input[type="number"] {
+      width: 96px;
+      padding: 12px 10px;
+      font-size: 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      text-align: center;
+      background: #fff;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: #111827;
+      box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
+    }
+
+    button {
+      align-self: end;
+      height: 46px;
+      padding: 0 20px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #374151;
+    }
+
+    .status {
+      min-height: 28px;
+      margin: 8px 0 18px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .help {
+      display: none;
+      margin: 12px 0 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c2d12;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .summary-card .label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .summary-card .value {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .block {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      overflow-x: auto;
+    }
+
+    .block-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.03em;
+    }
+
+    table {
+      width: 100%;
+      min-width: 920px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    th {
+      background: var(--head);
+      font-weight: 800;
+    }
+
+    .hit-row {
+      background: var(--hit);
+      font-weight: 800;
+    }
+
+    .num {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 8px;
+    }
+
+    .match-num {
+      background: var(--match);
+      color: #111;
+      font-weight: 900;
+      border: 2px solid #f59e0b;
+    }
+
+    .bonus-cell {
+      background: var(--bonus);
+      font-weight: 700;
+    }
+
+    .empty {
+      color: #9ca3af;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+      .back-link {
+        position: static;
+        margin: 14px 14px 0;
+      }
+
+      .wrap {
+        margin-top: 18px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="../">캡처 저장판으로 돌아가기</a>
+
+  <main class="wrap">
+    <section class="top">
+      <h1>로또 번호 흐름 분석</h1>
+      <p class="desc">
+        숫자 2개를 입력하면 두 숫자가 <strong>1등 당첨번호 6개</strong> 안에 같이 나온 회차를 찾고,
+        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong> 4주 흐름을 표로 보여줍니다.
+        보너스 번호는 검색 대상에서 제외됩니다.
+      </p>
+    </section>
+
+    <section class="search-box">
+      <div class="field">
+        <label for="num1">첫 번째 숫자</label>
+        <input id="num1" type="number" min="1" max="45" value="8" />
+      </div>
+
+      <div class="field">
+        <label for="num2">두 번째 숫자</label>
+        <input id="num2" type="number" min="1" max="45" value="41" />
+      </div>
+
+      <button type="button" onclick="searchLotto()">검색</button>
+    </section>
+
+    <div id="status" class="status">데이터 불러오는 중...</div>
+
+    <div id="help" class="help">
+      <strong>데이터 파일을 못 불러왔습니다.</strong><br />
+      index.html을 그냥 더블클릭으로 열면 브라우저가 lotto-data.json 읽기를 막을 수 있습니다.
+      VSCode에서 Live Server로 열거나, 폴더에서 <code>python -m http.server 5500</code> 실행 후
+      <code>http://localhost:5500</code>으로 접속하세요.
+    </div>
+
+    <div id="summary"></div>
+    <div id="result"></div>
+  </main>
+
+  <script>
+    let LOTTO_DRAWS = [];
+    let LOTTO_MAP = new Map();
+    let META = null;
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    async function init() {
+      try {
+        const res = await fetch("./lotto-data.json", { cache: "no-store" });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const payload = await res.json();
+
+        META = payload.meta || {};
+        LOTTO_DRAWS = Array.isArray(payload.draws) ? payload.draws : [];
+        LOTTO_MAP = new Map(
+          LOTTO_DRAWS.map((item) => [Number(item.round), item])
+        );
+
+        setStatus(
+          `데이터 로드 완료: 1회 ~ ${META.latestRound || LOTTO_DRAWS.length}회`,
+          false
+        );
+
+        searchLotto();
+      } catch (err) {
+        console.error(err);
+        setStatus("lotto-data.json 파일을 불러오지 못했습니다.", true);
+        document.getElementById("help").style.display = "block";
+      }
+    }
+
+    function setStatus(message, isError = false) {
+      const status = document.getElementById("status");
+
+      status.textContent = message;
+      status.className = isError ? "status error" : "status";
+    }
+
+    function getInputNumber(id) {
+      const value = Number(document.getElementById(id).value);
+
+      return Number.isInteger(value) ? value : NaN;
+    }
+
+    function validateNumber(n) {
+      return Number.isInteger(n) && n >= 1 && n <= 45;
+    }
+
+    function searchLotto() {
+      const n1 = getInputNumber("num1");
+      const n2 = getInputNumber("num2");
+      const summary = document.getElementById("summary");
+      const result = document.getElementById("result");
+
+      summary.innerHTML = "";
+      result.innerHTML = "";
+
+      if (!LOTTO_DRAWS.length) {
+        setStatus("데이터가 아직 없습니다.", true);
+        return;
+      }
+
+      if (!validateNumber(n1) || !validateNumber(n2)) {
+        setStatus("1부터 45 사이 숫자 2개를 입력해야 합니다.", true);
+        return;
+      }
+
+      if (n1 === n2) {
+        setStatus("서로 다른 숫자 2개를 입력해야 합니다.", true);
+        return;
+      }
+
+      const [a, b] = [n1, n2].sort((x, y) => x - y);
+
+      document.getElementById("num1").value = a;
+      document.getElementById("num2").value = b;
+
+      const hits = LOTTO_DRAWS.filter((item) => {
+        const nums = item.numbers || [];
+
+        return nums.includes(a) && nums.includes(b);
+      });
+
+      setStatus(`${a}, ${b}가 1등 번호에 같이 나온 회차: ${hits.length}개`, false);
+      renderSummary(a, b, hits);
+
+      if (!hits.length) {
+        result.innerHTML = `
+          <div class="block">
+            <strong>검색 결과 없음</strong>
+            <div class="small">보너스 번호는 검색 대상에서 제외했습니다.</div>
+          </div>
+        `;
+        return;
+      }
+
+      hits.forEach((hit) => renderBlock(hit, a, b));
+    }
+
+    function renderSummary(a, b, hits) {
+      const latest =
+        META?.latestRound || Math.max(...LOTTO_DRAWS.map((x) => x.round));
+
+      const lastHit = hits.length ? hits[hits.length - 1] : null;
+      const firstHit = hits.length ? hits[0] : null;
+
+      document.getElementById("summary").innerHTML = `
+        <section class="summary">
+          <div class="summary-card">
+            <div class="label">검색 번호</div>
+            <div class="value">${a}, ${b}</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">동시 출현 횟수</div>
+            <div class="value">${hits.length}회</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">첫 출현 회차</div>
+            <div class="value">${firstHit ? firstHit.round + "회" : "-"}</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">최신 데이터</div>
+            <div class="value">${latest}회</div>
+          </div>
+        </section>
+
+        ${
+          lastHit
+            ? `<div class="small">마지막 출현: ${lastHit.round}회 (${lastHit.date})</div>`
+            : ""
+        }
+      `;
+    }
+
+    function renderBlock(hit, a, b) {
+      const rows = [
+        LOTTO_MAP.get(hit.round - 2),
+        LOTTO_MAP.get(hit.round - 1),
+        LOTTO_MAP.get(hit.round),
+        LOTTO_MAP.get(hit.round + 1),
+      ];
+
+      const block = document.createElement("section");
+
+      block.className = "block";
+      block.innerHTML = `
+        <div class="block-title">${hit.round}회차 기준</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>추첨일</th>
+              <th>1번</th>
+              <th>2번</th>
+              <th>3번</th>
+              <th>4번</th>
+              <th>5번</th>
+              <th>6번</th>
+              <th>보너스</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${rows.map((row) => makeRow(row, hit.round, a, b)).join("")}
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById("result").appendChild(block);
+    }
+
+    function makeRow(row, hitRound, a, b) {
+      if (!row) {
+        return `
+          <tr>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="bonus-cell empty">-</td>
+            <td class="empty">자료 없음</td>
+          </tr>
+        `;
+      }
+
+      const isHit = Number(row.round) === Number(hitRound);
+
+      const numbersHtml = row.numbers
+        .map((num) => {
+          const isMatch = isHit && (num === a || num === b);
+
+          return `
+            <td>
+              <span class="num ${isMatch ? "match-num" : ""}">${num}</span>
+            </td>
+          `;
+        })
+        .join("");
+
+      return `
+        <tr class="${isHit ? "hit-row" : ""}">
+          <td>${row.round}</td>
+          <td>${row.date}</td>
+          ${numbersHtml}
+          <td class="bonus-cell">${row.bonus}</td>
+          <td>${isHit ? `${a}, ${b} 나온 회차` : ""}</td>
+        </tr>
+      `;
+    }
+  </script>
+</body>
+</html>
