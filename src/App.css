@@ -28,7 +28,9 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
 }
 
 .app {
@@ -243,8 +245,8 @@ button:disabled {
   box-shadow: 0 10px 22px rgba(220, 30, 30, 0.2);
 }
 
-.primary-btn:hover,
-.danger-btn:hover {
+.primary-btn:hover:not(:disabled),
+.danger-btn:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 
@@ -252,6 +254,76 @@ button:disabled {
 .danger-btn:active {
   transform: translateY(0);
   opacity: 0.86;
+}
+
+.mode-toggle {
+  display: grid;
+  align-content: center;
+  min-width: 128px;
+  height: 54px;
+  padding: 6px 14px;
+  border: 1px solid rgba(40, 50, 80, 0.1);
+  border-radius: 16px;
+  background: #ffffff;
+  color: #222836;
+  text-align: left;
+  box-shadow: 0 10px 24px rgba(30, 40, 70, 0.08);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.mode-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(30, 40, 70, 0.12);
+}
+
+.mode-toggle span {
+  color: #737b89;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.mode-toggle strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.mode-toggle em {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.mode-toggle-locked {
+  border-color: rgba(24, 134, 75, 0.24);
+  background: linear-gradient(135deg, #ffffff, #f2fff7);
+}
+
+.mode-toggle-locked strong,
+.mode-toggle-locked em {
+  color: #18864b;
+}
+
+.mode-toggle-editing {
+  border-color: rgba(255, 158, 27, 0.36);
+  background: linear-gradient(135deg, #fff8ea, #ffffff);
+}
+
+.mode-toggle-editing strong {
+  color: #ff8a00;
+}
+
+.mode-toggle-editing em {
+  color: #b66a00;
 }
 
 .paste-guide {
@@ -371,10 +443,21 @@ button:disabled {
   padding: 12px 12px 10px;
   background: linear-gradient(135deg, #1f2430, #353d51);
   color: #fff;
+}
+
+.capture-card.is-locked .capture-card-header {
+  cursor: default;
+}
+
+.capture-card.is-locked .capture-card-header:active {
+  cursor: default;
+}
+
+.capture-card.is-editing .capture-card-header {
   cursor: grab;
 }
 
-.capture-card-header:active {
+.capture-card.is-editing .capture-card-header:active {
   cursor: grabbing;
 }
 
@@ -773,7 +856,8 @@ button:disabled {
   .input-group,
   .input-group input,
   .primary-btn,
-  .danger-btn {
+  .danger-btn,
+  .mode-toggle {
     width: 100%;
   }
 

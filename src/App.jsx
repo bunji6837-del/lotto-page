@@ -62,6 +62,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCaptureId, setSelectedCaptureId] = useState(null);
   const [previewCaptureId, setPreviewCaptureId] = useState(null);
+  const [boardMode, setBoardMode] = useState("locked");
   const [pageMemo, setPageMemo] = useState("");
   const [lastSavedMemo, setLastSavedMemo] = useState("");
   const [memoSaveStatus, setMemoSaveStatus] = useState("idle");
@@ -89,6 +90,21 @@ export default function App() {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 3200);
   }, []);
+
+  const handleToggleBoardMode = () => {
+  const next = boardMode === "editing" ? "locked" : "editing";
+
+  setBoardMode(next);
+
+  if (next === "editing") {
+    setMessage("수정 상태입니다. 카드 상단을 잡고 위치를 이동할 수 있습니다.");
+    showToast("수정 상태로 변경되었습니다.", "info");
+  } else {
+    dragRef.current = null;
+    setMessage("저장 상태입니다. 카드 위치 이동이 잠겼습니다.");
+    showToast("저장 상태로 변경되었습니다.", "success");
+  }
+};
 
   useEffect(() => {
     capturesRef.current = captures;
@@ -382,6 +398,7 @@ export default function App() {
         }
 
         setMessage("위치가 Supabase에 저장되었습니다.");
+        showToast("위치가 저장되었습니다.", "success");
       } catch (error) {
         console.error(error);
         setMessage("위치 저장 중 오류가 발생했습니다.");
@@ -402,6 +419,12 @@ export default function App() {
     if (event.button !== 0) return;
 
     setSelectedCaptureId(capture.id);
+
+    if (boardMode !== "editing") {
+      showToast("수정 상태에서만 위치를 이동할 수 있습니다.", "info");
+      setMessage("저장 상태에서는 카드 위치 이동이 잠겨 있습니다.");
+      return;
+    }
 
     const maxZIndex = capturesRef.current.reduce((max, item) => {
       return Math.max(max, item.zIndex || 1);
@@ -554,6 +577,12 @@ export default function App() {
   };
 
   const handleAutoArrange = async () => {
+    if (boardMode !== "editing") {
+      showToast("수정 상태에서만 자동 정렬할 수 있습니다.", "info");
+      setMessage("저장 상태에서는 자동 정렬이 잠겨 있습니다.");
+      return;
+    }
+
     const arranged = captures.map((capture, index) => ({
       ...capture,
       x: 24 + (index % 4) * 310,
@@ -648,12 +677,27 @@ export default function App() {
           />
         </div>
 
-        <button type="button" className="primary-btn" onClick={handleAutoArrange}>
+        <button
+          type="button"
+          className="primary-btn"
+          onClick={handleAutoArrange}
+          disabled={boardMode !== "editing"}
+        >
           자동 정렬
         </button>
 
         <button type="button" className="danger-btn" onClick={openClearAllConfirm}>
           전체 삭제
+        </button>
+
+        <button
+          type="button"
+          className={`mode-toggle mode-toggle-${boardMode}`}
+          onClick={handleToggleBoardMode}
+        >
+          <span>현재 상태</span>
+          <strong>{boardMode === "editing" ? "수정 상태" : "저장 상태"}</strong>
+          <em>{boardMode === "editing" ? "드래그 가능" : "이동 잠금"}</em>
         </button>
       </section>
 
@@ -662,8 +706,7 @@ export default function App() {
           <strong>사용 방법</strong>
           <p>
             로또 화면을 캡처한 뒤 이 페이지에서 <b>Ctrl + V</b>를 누르면 저장됩니다.
-            이미지를 클릭하면 크게 볼 수 있고, 오른쪽 메모장은 웹페이지 전체 공용
-            메모장입니다.
+            저장 상태에서는 카드 위치가 잠기고, 수정 상태에서만 카드를 움직일 수 있습니다.
           </p>
         </div>
 
@@ -687,7 +730,7 @@ export default function App() {
                   key={capture.id}
                   className={`capture-card ${
                     selectedCaptureId === capture.id ? "is-selected" : ""
-                  }`}
+                  } ${boardMode === "editing" ? "is-editing" : "is-locked"}`}
                   style={{
                     transform: `translate(${capture.x}px, ${capture.y}px)`,
                     zIndex: capture.zIndex || 1,
