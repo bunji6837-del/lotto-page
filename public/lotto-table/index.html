@@ -134,6 +134,14 @@
       background: #374151;
     }
 
+    .reset-btn {
+      background: #6b7280;
+    }
+
+    .reset-btn:hover {
+      background: #4b5563;
+    }
+
     .status {
       min-height: 28px;
       margin: 8px 0 18px;
@@ -297,15 +305,16 @@
     <section class="search-box">
       <div class="field">
         <label for="num1">첫 번째 숫자</label>
-        <input id="num1" type="number" min="1" max="45" value="8" />
+        <input id="num1" type="number" min="1" max="45" placeholder="예: 8" />
       </div>
 
       <div class="field">
         <label for="num2">두 번째 숫자</label>
-        <input id="num2" type="number" min="1" max="45" value="41" />
+        <input id="num2" type="number" min="1" max="45" placeholder="예: 41" />
       </div>
 
       <button type="button" onclick="searchLotto()">검색</button>
+      <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
     </section>
 
     <div id="status" class="status">데이터 불러오는 중...</div>
@@ -322,6 +331,8 @@
   </main>
 
   <script>
+    const STORAGE_KEY = "lotto-table-last-search";
+
     let LOTTO_DRAWS = [];
     let LOTTO_MAP = new Map();
     let META = null;
@@ -344,17 +355,80 @@
           LOTTO_DRAWS.map((item) => [Number(item.round), item])
         );
 
+        const latestRound = META.latestRound || LOTTO_DRAWS.length;
+
         setStatus(
-          `데이터 로드 완료: 1회 ~ ${META.latestRound || LOTTO_DRAWS.length}회`,
+          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개를 입력하고 검색하세요.`,
           false
         );
 
-        searchLotto();
+        restoreLastSearch();
       } catch (err) {
         console.error(err);
         setStatus("lotto-data.json 파일을 불러오지 못했습니다.", true);
         document.getElementById("help").style.display = "block";
       }
+    }
+
+    function restoreLastSearch() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (!saved) {
+        clearResult();
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+
+        if (
+          validateNumber(parsed.num1) &&
+          validateNumber(parsed.num2) &&
+          parsed.num1 !== parsed.num2
+        ) {
+          document.getElementById("num1").value = parsed.num1;
+          document.getElementById("num2").value = parsed.num2;
+          searchLotto(false);
+          return;
+        }
+
+        localStorage.removeItem(STORAGE_KEY);
+        clearResult();
+      } catch (error) {
+        localStorage.removeItem(STORAGE_KEY);
+        clearResult();
+      }
+    }
+
+    function saveLastSearch(a, b) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          num1: a,
+          num2: b,
+        })
+      );
+    }
+
+    function resetSearch() {
+      localStorage.removeItem(STORAGE_KEY);
+
+      document.getElementById("num1").value = "";
+      document.getElementById("num2").value = "";
+
+      clearResult();
+
+      const latestRound = META?.latestRound || LOTTO_DRAWS.length;
+
+      setStatus(
+        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개를 입력하고 검색하세요.`,
+        false
+      );
+    }
+
+    function clearResult() {
+      document.getElementById("summary").innerHTML = "";
+      document.getElementById("result").innerHTML = "";
     }
 
     function setStatus(message, isError = false) {
@@ -365,7 +439,13 @@
     }
 
     function getInputNumber(id) {
-      const value = Number(document.getElementById(id).value);
+      const rawValue = document.getElementById(id).value;
+
+      if (rawValue === "") {
+        return NaN;
+      }
+
+      const value = Number(rawValue);
 
       return Number.isInteger(value) ? value : NaN;
     }
@@ -374,7 +454,7 @@
       return Number.isInteger(n) && n >= 1 && n <= 45;
     }
 
-    function searchLotto() {
+    function searchLotto(shouldSave = true) {
       const n1 = getInputNumber("num1");
       const n2 = getInputNumber("num2");
       const summary = document.getElementById("summary");
@@ -403,6 +483,10 @@
       document.getElementById("num1").value = a;
       document.getElementById("num2").value = b;
 
+      if (shouldSave) {
+        saveLastSearch(a, b);
+      }
+
       const hits = LOTTO_DRAWS.filter((item) => {
         const nums = item.numbers || [];
 
@@ -424,6 +508,16 @@
 
       hits.forEach((hit) => renderBlock(hit, a, b));
     }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        const activeTag = document.activeElement?.tagName?.toLowerCase();
+
+        if (activeTag === "input") {
+          searchLotto();
+        }
+      }
+    });
 
     function renderSummary(a, b, hits) {
       const latest =
