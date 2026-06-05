@@ -63,11 +63,14 @@ export default function App() {
   const [selectedCaptureId, setSelectedCaptureId] = useState(null);
   const [previewCaptureId, setPreviewCaptureId] = useState(null);
   const [boardMode, setBoardMode] = useState("locked");
+
+  const [isMemoOpen, setIsMemoOpen] = useState(false);
   const [pageMemo, setPageMemo] = useState("");
   const [lastSavedMemo, setLastSavedMemo] = useState("");
   const [memoSaveStatus, setMemoSaveStatus] = useState("idle");
   const [isMemoLoaded, setIsMemoLoaded] = useState(false);
   const [memoUpdatedAt, setMemoUpdatedAt] = useState("");
+
   const [toasts, setToasts] = useState([]);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -92,19 +95,19 @@ export default function App() {
   }, []);
 
   const handleToggleBoardMode = () => {
-  const next = boardMode === "editing" ? "locked" : "editing";
+    const next = boardMode === "editing" ? "locked" : "editing";
 
-  setBoardMode(next);
+    setBoardMode(next);
 
-  if (next === "editing") {
-    setMessage("수정 상태입니다. 카드 상단을 잡고 위치를 이동할 수 있습니다.");
-    showToast("수정 상태로 변경되었습니다.", "info");
-  } else {
-    dragRef.current = null;
-    setMessage("저장 상태입니다. 카드 위치 이동이 잠겼습니다.");
-    showToast("저장 상태로 변경되었습니다.", "success");
-  }
-};
+    if (next === "editing") {
+      setMessage("수정 상태입니다. 카드 상단을 잡고 위치를 이동할 수 있습니다.");
+      showToast("수정 상태로 변경되었습니다.", "info");
+    } else {
+      dragRef.current = null;
+      setMessage("저장 상태입니다. 카드 위치 이동이 잠겼습니다.");
+      showToast("저장 상태로 변경되었습니다.", "success");
+    }
+  };
 
   useEffect(() => {
     capturesRef.current = captures;
@@ -341,6 +344,7 @@ export default function App() {
       if (event.key === "Escape") {
         setPreviewCaptureId(null);
         setConfirmDialog(null);
+        setIsMemoOpen(false);
       }
     };
 
@@ -498,7 +502,7 @@ export default function App() {
     setConfirmDialog({
       title: "전체 캡처를 모두 삭제할까요?",
       description:
-        "저장된 모든 캡처 이미지만 삭제됩니다. 오른쪽 웹페이지 메모장은 삭제되지 않습니다.",
+        "저장된 모든 캡처 이미지만 삭제됩니다. 메모장은 삭제되지 않습니다.",
       confirmText: "전체 삭제",
       cancelText: "취소",
       mode: "danger",
@@ -529,7 +533,7 @@ export default function App() {
     setConfirmDialog({
       title: "메모장을 비울까요?",
       description:
-        "오른쪽 웹페이지 메모장 내용만 삭제됩니다. 캡처 이미지는 삭제되지 않습니다.",
+        "메모장 내용만 삭제됩니다. 캡처 이미지는 삭제되지 않습니다.",
       confirmText: "메모 비우기",
       cancelText: "취소",
       mode: "danger",
@@ -636,6 +640,14 @@ export default function App() {
           </div>
         ))}
       </div>
+
+      <button
+        type="button"
+        className="memo-floating-button"
+        onClick={() => setIsMemoOpen(true)}
+      >
+        <span>메모장</span>
+      </button>
 
       <header className="top-header">
         <div>
@@ -774,49 +786,65 @@ export default function App() {
               ))}
           </div>
         </main>
+      </section>
 
-        <aside className="memo-panel">
-          <div className="memo-panel-header">
-            <div>
-              <p className="memo-eyebrow">Page Memo</p>
-              <h2>전체 메모장</h2>
+      {isMemoOpen && (
+        <div className="memo-modal-overlay" onClick={() => setIsMemoOpen(false)}>
+          <section
+            className="memo-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="memo-modal-header">
+              <div>
+                <p className="memo-eyebrow">Page Memo</p>
+                <h2>전체 메모장</h2>
+              </div>
+
+              <div className="memo-modal-header-right">
+                <span className={`memo-status memo-status-${memoSaveStatus}`}>
+                  {memoSaveStatus === "saving" && "저장 중"}
+                  {memoSaveStatus === "saved" && "저장 완료"}
+                  {memoSaveStatus === "error" && "저장 실패"}
+                  {memoSaveStatus === "idle" && "대기"}
+                </span>
+
+                <button
+                  type="button"
+                  className="memo-close-btn"
+                  onClick={() => setIsMemoOpen(false)}
+                >
+                  닫기
+                </button>
+              </div>
             </div>
 
-            <span className={`memo-status memo-status-${memoSaveStatus}`}>
-              {memoSaveStatus === "saving" && "저장 중"}
-              {memoSaveStatus === "saved" && "저장 완료"}
-              {memoSaveStatus === "error" && "저장 실패"}
-              {memoSaveStatus === "idle" && "대기"}
-            </span>
-          </div>
+            <div className="memo-info-box">
+              <strong>공용 메모</strong>
+              <span>
+                {memoUpdatedAt
+                  ? `마지막 저장: ${formatDate(memoUpdatedAt)}`
+                  : "아직 저장 기록이 없습니다."}
+              </span>
+            </div>
 
-          <div className="memo-info-box">
-            <strong>공용 메모</strong>
-            <span>
-              {memoUpdatedAt
-                ? `마지막 저장: ${formatDate(memoUpdatedAt)}`
-                : "아직 저장 기록이 없습니다."}
-            </span>
-          </div>
+            <textarea
+              value={pageMemo}
+              onChange={(event) => setPageMemo(event.target.value)}
+              placeholder="여기에 자유롭게 메모하세요. 이 메모장은 특정 사진이 아니라 웹페이지 전체 메모장입니다. 입력 후 잠시 멈추면 Supabase에 자동 저장됩니다."
+            />
 
-          <textarea
-            value={pageMemo}
-            onChange={(event) => setPageMemo(event.target.value)}
-            placeholder="여기에 자유롭게 메모하세요. 이 메모장은 특정 사진이 아니라 웹페이지 전체 메모장입니다. 입력 후 잠시 멈추면 Supabase에 자동 저장됩니다."
-          />
+            <div className="memo-modal-footer">
+              <p>
+                메모장은 캡처 카드와 별개로 저장됩니다. 캡처를 삭제해도 메모장은 유지됩니다.
+              </p>
 
-          <div className="memo-actions">
-            <button type="button" onClick={openClearMemoConfirm}>
-              메모 비우기
-            </button>
-          </div>
-
-          <div className="memo-help">
-            이 메모장은 캡처 카드와 별개로 저장됩니다. 캡처를 삭제해도 메모장은
-            그대로 유지됩니다.
-          </div>
-        </aside>
-      </section>
+              <button type="button" onClick={openClearMemoConfirm}>
+                메모 비우기
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
 
       {previewCapture && (
         <div className="preview-overlay" onClick={() => setPreviewCaptureId(null)}>

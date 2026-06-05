@@ -87,6 +87,33 @@ button:disabled {
   }
 }
 
+.memo-floating-button {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  z-index: 9000;
+  width: 54px;
+  height: 132px;
+  border: 0;
+  border-radius: 18px 0 0 18px;
+  background: linear-gradient(135deg, #1f2430, #353d51);
+  color: #ffffff;
+  box-shadow: 0 16px 38px rgba(26, 35, 55, 0.24);
+  transform: translateY(-50%);
+}
+
+.memo-floating-button span {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.memo-floating-button:hover {
+  background: linear-gradient(135deg, #2c3446, #49546d);
+}
+
 .top-header {
   display: flex;
   justify-content: space-between;
@@ -365,10 +392,7 @@ button:disabled {
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 18px;
-  align-items: start;
+  display: block;
 }
 
 .board-wrap {
@@ -389,8 +413,8 @@ button:disabled {
 
 .board {
   position: relative;
-  min-width: 1400px;
-  min-height: 900px;
+  min-width: 1600px;
+  min-height: 1000px;
 }
 
 .empty-box {
@@ -503,24 +527,42 @@ button:disabled {
   cursor: zoom-in;
 }
 
-.memo-panel {
-  position: sticky;
-  top: 18px;
-  min-height: 650px;
-  padding: 18px;
-  border: 1px solid rgba(40, 50, 80, 0.08);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 18px 45px rgba(24, 34, 60, 0.1);
-  backdrop-filter: blur(18px);
+.memo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(12, 16, 24, 0.58);
+  backdrop-filter: blur(10px);
 }
 
-.memo-panel-header {
+.memo-modal {
+  width: min(860px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+  animation: dialogIn 0.22s ease both;
+}
+
+.memo-modal-header {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-start;
   margin-bottom: 16px;
+}
+
+.memo-modal-header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .memo-eyebrow {
@@ -532,10 +574,10 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.memo-panel h2 {
+.memo-modal h2 {
   margin: 0;
   color: #222836;
-  font-size: 24px;
+  font-size: 26px;
   letter-spacing: -0.04em;
 }
 
@@ -564,6 +606,21 @@ button:disabled {
   color: #ce2c2c;
 }
 
+.memo-close-btn {
+  height: 36px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 12px;
+  background: #eef1f6;
+  color: #434b59;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.memo-close-btn:hover {
+  background: #e2e6ef;
+}
+
 .memo-info-box {
   padding: 13px 14px;
   margin-bottom: 14px;
@@ -586,9 +643,9 @@ button:disabled {
   line-height: 1.35;
 }
 
-.memo-panel textarea {
+.memo-modal textarea {
   width: 100%;
-  min-height: 420px;
+  min-height: 430px;
   resize: vertical;
   padding: 15px;
   border: 1px solid #dce2ee;
@@ -605,18 +662,29 @@ button:disabled {
     box-shadow 0.2s ease;
 }
 
-.memo-panel textarea:focus {
+.memo-modal textarea:focus {
   border-color: #ffae35;
   box-shadow: 0 0 0 4px rgba(255, 174, 53, 0.16);
 }
 
-.memo-actions {
+.memo-modal-footer {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
 }
 
-.memo-actions button {
+.memo-modal-footer p {
+  margin: 0;
+  color: #74604a;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.memo-modal-footer button {
+  flex: 0 0 auto;
   height: 38px;
   padding: 0 14px;
   border: 0;
@@ -627,19 +695,8 @@ button:disabled {
   font-weight: 900;
 }
 
-.memo-actions button:hover {
+.memo-modal-footer button:hover {
   background: #e3e7ef;
-}
-
-.memo-help {
-  margin-top: 12px;
-  padding: 13px 14px;
-  border-radius: 16px;
-  background: #fff8ea;
-  color: #74604a;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.55;
 }
 
 .preview-overlay {
@@ -816,24 +873,10 @@ button:disabled {
   text-align: right;
 }
 
-@media (max-width: 1180px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .memo-panel {
-    position: static;
-    min-height: auto;
-  }
-
-  .memo-panel textarea {
-    min-height: 260px;
-  }
-}
-
 @media (max-width: 768px) {
   .app {
     padding: 18px;
+    padding-bottom: 86px;
   }
 
   .top-header {
@@ -873,6 +916,55 @@ button:disabled {
 
   .board {
     min-width: 900px;
+  }
+
+  .memo-floating-button {
+    top: auto;
+    right: 18px;
+    bottom: 18px;
+    width: 120px;
+    height: 46px;
+    border-radius: 999px;
+    transform: none;
+  }
+
+  .memo-floating-button span {
+    writing-mode: horizontal-tb;
+    letter-spacing: 0;
+  }
+
+  .memo-modal-overlay {
+    padding: 12px;
+    align-items: stretch;
+  }
+
+  .memo-modal {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .memo-modal-header {
+    flex-direction: column;
+  }
+
+  .memo-modal-header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .memo-modal textarea {
+    min-height: 48vh;
+  }
+
+  .memo-modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .memo-modal-footer button {
+    width: 100%;
   }
 
   .preview-overlay {

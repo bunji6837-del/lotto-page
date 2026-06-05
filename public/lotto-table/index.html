@@ -283,12 +283,21 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      input[type="number"] {
+        width: 100%;
+      }
+
+      .field {
+        flex: 1 1 130px;
+      }
+
       button {
         width: 100%;
       }
     }
   </style>
 </head>
+
 <body>
   <a class="back-link" href="../">캡처 저장판으로 돌아가기</a>
 
@@ -296,21 +305,32 @@
     <section class="top">
       <h1>로또 번호 흐름 분석</h1>
       <p class="desc">
-        숫자 2개를 입력하면 두 숫자가 <strong>1등 당첨번호 6개</strong> 안에 같이 나온 회차를 찾고,
-        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong> 4주 흐름을 표로 보여줍니다.
-        보너스 번호는 검색 대상에서 제외됩니다.
+        숫자 <strong>2개부터 4개까지</strong> 입력하면 해당 숫자들이
+        <strong>1등 당첨번호 6개</strong> 안에 같이 나온 회차를 찾고,
+        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong>
+        4주 흐름을 표로 보여줍니다. 보너스 번호는 검색 대상에서 제외됩니다.
       </p>
     </section>
 
     <section class="search-box">
       <div class="field">
         <label for="num1">첫 번째 숫자</label>
-        <input id="num1" type="number" min="1" max="45" placeholder="예: 8" />
+        <input id="num1" type="number" min="1" max="45" placeholder="예: 4" />
       </div>
 
       <div class="field">
         <label for="num2">두 번째 숫자</label>
-        <input id="num2" type="number" min="1" max="45" placeholder="예: 41" />
+        <input id="num2" type="number" min="1" max="45" placeholder="예: 17" />
+      </div>
+
+      <div class="field">
+        <label for="num3">세 번째 숫자</label>
+        <input id="num3" type="number" min="1" max="45" placeholder="선택" />
+      </div>
+
+      <div class="field">
+        <label for="num4">네 번째 숫자</label>
+        <input id="num4" type="number" min="1" max="45" placeholder="선택" />
       </div>
 
       <button type="button" onclick="searchLotto()">검색</button>
@@ -332,6 +352,7 @@
 
   <script>
     const STORAGE_KEY = "lotto-table-last-search";
+    const INPUT_IDS = ["num1", "num2", "num3", "num4"];
 
     let LOTTO_DRAWS = [];
     let LOTTO_MAP = new Map();
@@ -358,7 +379,7 @@
         const latestRound = META.latestRound || LOTTO_DRAWS.length;
 
         setStatus(
-          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개를 입력하고 검색하세요.`,
+          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개 이상, 최대 4개까지 입력하고 검색하세요.`,
           false
         );
 
@@ -380,14 +401,12 @@
 
       try {
         const parsed = JSON.parse(saved);
+        const numbers = Array.isArray(parsed.numbers)
+          ? parsed.numbers
+          : [parsed.num1, parsed.num2].filter(Boolean);
 
-        if (
-          validateNumber(parsed.num1) &&
-          validateNumber(parsed.num2) &&
-          parsed.num1 !== parsed.num2
-        ) {
-          document.getElementById("num1").value = parsed.num1;
-          document.getElementById("num2").value = parsed.num2;
+        if (isValidSearchNumbers(numbers)) {
+          fillInputs(numbers);
           searchLotto(false);
           return;
         }
@@ -400,12 +419,11 @@
       }
     }
 
-    function saveLastSearch(a, b) {
+    function saveLastSearch(numbers) {
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
-          num1: a,
-          num2: b,
+          numbers,
         })
       );
     }
@@ -413,15 +431,16 @@
     function resetSearch() {
       localStorage.removeItem(STORAGE_KEY);
 
-      document.getElementById("num1").value = "";
-      document.getElementById("num2").value = "";
+      INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
 
       clearResult();
 
       const latestRound = META?.latestRound || LOTTO_DRAWS.length;
 
       setStatus(
-        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개를 입력하고 검색하세요.`,
+        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개 이상, 최대 4개까지 입력하고 검색하세요.`,
         false
       );
     }
@@ -438,25 +457,45 @@
       status.className = isError ? "status error" : "status";
     }
 
-    function getInputNumber(id) {
-      const rawValue = document.getElementById(id).value;
+    function getInputNumbers() {
+      return INPUT_IDS.map((id) => {
+        const rawValue = document.getElementById(id).value.trim();
 
-      if (rawValue === "") {
-        return NaN;
-      }
+        if (rawValue === "") {
+          return null;
+        }
 
-      const value = Number(rawValue);
+        const value = Number(rawValue);
 
-      return Number.isInteger(value) ? value : NaN;
+        return Number.isInteger(value) ? value : NaN;
+      }).filter((value) => value !== null);
     }
 
     function validateNumber(n) {
       return Number.isInteger(n) && n >= 1 && n <= 45;
     }
 
+    function isValidSearchNumbers(numbers) {
+      if (!Array.isArray(numbers)) return false;
+      if (numbers.length < 2 || numbers.length > 4) return false;
+      if (!numbers.every(validateNumber)) return false;
+
+      const unique = new Set(numbers);
+      return unique.size === numbers.length;
+    }
+
+    function normalizeNumbers(numbers) {
+      return [...numbers].sort((a, b) => a - b);
+    }
+
+    function fillInputs(numbers) {
+      INPUT_IDS.forEach((id, index) => {
+        document.getElementById(id).value = numbers[index] || "";
+      });
+    }
+
     function searchLotto(shouldSave = true) {
-      const n1 = getInputNumber("num1");
-      const n2 = getInputNumber("num2");
+      const inputNumbers = getInputNumbers();
       const summary = document.getElementById("summary");
       const result = document.getElementById("result");
 
@@ -468,33 +507,47 @@
         return;
       }
 
-      if (!validateNumber(n1) || !validateNumber(n2)) {
-        setStatus("1부터 45 사이 숫자 2개를 입력해야 합니다.", true);
+      if (inputNumbers.length < 2) {
+        setStatus("숫자는 최소 2개 이상 입력해야 합니다.", true);
         return;
       }
 
-      if (n1 === n2) {
-        setStatus("서로 다른 숫자 2개를 입력해야 합니다.", true);
+      if (inputNumbers.length > 4) {
+        setStatus("숫자는 최대 4개까지만 검색할 수 있습니다.", true);
         return;
       }
 
-      const [a, b] = [n1, n2].sort((x, y) => x - y);
+      if (!inputNumbers.every(validateNumber)) {
+        setStatus("1부터 45 사이 숫자만 입력해야 합니다.", true);
+        return;
+      }
 
-      document.getElementById("num1").value = a;
-      document.getElementById("num2").value = b;
+      const unique = new Set(inputNumbers);
+
+      if (unique.size !== inputNumbers.length) {
+        setStatus("중복 숫자는 입력할 수 없습니다.", true);
+        return;
+      }
+
+      const searchNumbers = normalizeNumbers(inputNumbers);
+      fillInputs(searchNumbers);
 
       if (shouldSave) {
-        saveLastSearch(a, b);
+        saveLastSearch(searchNumbers);
       }
 
       const hits = LOTTO_DRAWS.filter((item) => {
         const nums = item.numbers || [];
 
-        return nums.includes(a) && nums.includes(b);
+        return searchNumbers.every((num) => nums.includes(num));
       });
 
-      setStatus(`${a}, ${b}가 1등 번호에 같이 나온 회차: ${hits.length}개`, false);
-      renderSummary(a, b, hits);
+      setStatus(
+        `${searchNumbers.join(", ")}가 1등 번호에 같이 나온 회차: ${hits.length}개`,
+        false
+      );
+
+      renderSummary(searchNumbers, hits);
 
       if (!hits.length) {
         result.innerHTML = `
@@ -506,7 +559,7 @@
         return;
       }
 
-      hits.forEach((hit) => renderBlock(hit, a, b));
+      hits.forEach((hit) => renderBlock(hit, searchNumbers));
     }
 
     document.addEventListener("keydown", function (event) {
@@ -519,7 +572,7 @@
       }
     });
 
-    function renderSummary(a, b, hits) {
+    function renderSummary(searchNumbers, hits) {
       const latest =
         META?.latestRound || Math.max(...LOTTO_DRAWS.map((x) => x.round));
 
@@ -530,7 +583,7 @@
         <section class="summary">
           <div class="summary-card">
             <div class="label">검색 번호</div>
-            <div class="value">${a}, ${b}</div>
+            <div class="value">${searchNumbers.join(", ")}</div>
           </div>
 
           <div class="summary-card">
@@ -557,7 +610,7 @@
       `;
     }
 
-    function renderBlock(hit, a, b) {
+    function renderBlock(hit, searchNumbers) {
       const rows = [
         LOTTO_MAP.get(hit.round - 2),
         LOTTO_MAP.get(hit.round - 1),
@@ -588,7 +641,7 @@
           </thead>
 
           <tbody>
-            ${rows.map((row) => makeRow(row, hit.round, a, b)).join("")}
+            ${rows.map((row) => makeRow(row, hit.round, searchNumbers)).join("")}
           </tbody>
         </table>
       `;
@@ -596,7 +649,7 @@
       document.getElementById("result").appendChild(block);
     }
 
-    function makeRow(row, hitRound, a, b) {
+    function makeRow(row, hitRound, searchNumbers) {
       if (!row) {
         return `
           <tr>
@@ -618,7 +671,7 @@
 
       const numbersHtml = row.numbers
         .map((num) => {
-          const isMatch = isHit && (num === a || num === b);
+          const isMatch = isHit && searchNumbers.includes(num);
 
           return `
             <td>
@@ -634,7 +687,7 @@
           <td>${row.date}</td>
           ${numbersHtml}
           <td class="bonus-cell">${row.bonus}</td>
-          <td>${isHit ? `${a}, ${b} 나온 회차` : ""}</td>
+          <td>${isHit ? `${searchNumbers.join(", ")} 나온 회차` : ""}</td>
         </tr>
       `;
     }
