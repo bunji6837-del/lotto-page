@@ -874,8 +874,14 @@ button:disabled {
 }
 
 @media (max-width: 768px) {
+  input,
+  textarea,
+  button {
+    font-size: 16px;
+  }
+
   .app {
-    padding: 18px;
+    padding: 14px;
     padding-bottom: 86px;
   }
 
@@ -898,10 +904,13 @@ button:disabled {
 
   .input-group,
   .input-group input,
-  .primary-btn,
-  .danger-btn,
-  .mode-toggle {
+  .danger-btn {
     width: 100%;
+  }
+
+  .primary-btn,
+  .mode-toggle {
+    display: none;
   }
 
   .paste-guide {
@@ -931,18 +940,19 @@ button:disabled {
   .memo-floating-button span {
     writing-mode: horizontal-tb;
     letter-spacing: 0;
+    font-size: 16px;
   }
 
   .memo-modal-overlay {
-    padding: 12px;
+    padding: 8px;
     align-items: stretch;
   }
 
   .memo-modal {
     width: 100%;
-    max-height: calc(100vh - 24px);
-    border-radius: 22px;
-    padding: 16px;
+    max-height: calc(100vh - 16px);
+    border-radius: 18px;
+    padding: 14px;
   }
 
   .memo-modal-header {
@@ -955,7 +965,9 @@ button:disabled {
   }
 
   .memo-modal textarea {
-    min-height: 48vh;
+    min-height: 52vh;
+    font-size: 16px;
+    line-height: 1.6;
   }
 
   .memo-modal-footer {
@@ -991,7 +1003,6 @@ button:disabled {
   }
 
   .toast-stack {
-    top: 14px;
-    right: 14px;
+    display: none;
   }
 }

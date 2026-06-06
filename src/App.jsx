@@ -34,6 +34,10 @@ function formatDate(value) {
   return new Date(value).toLocaleString("ko-KR");
 }
 
+function isMobileScreen() {
+  return window.matchMedia("(max-width: 768px)").matches;
+}
+
 async function removeStorageFiles(paths) {
   const validPaths = paths.filter(Boolean);
 
@@ -82,6 +86,10 @@ export default function App() {
     captures.find((capture) => capture.id === previewCaptureId) || null;
 
   const showToast = useCallback((text, type = "info") => {
+    if (isMobileScreen()) {
+      return;
+    }
+
     const id = createId();
 
     setToasts((prev) => {
