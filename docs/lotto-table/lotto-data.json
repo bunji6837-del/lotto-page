@@ -1,9 +1,9 @@
 {
   "meta": {
     "name": "Korea Lotto 6/45 winning numbers",
-    "latestRound": 1226,
-    "drawCount": 1226,
-    "range": "1~1226",
+    "latestRound": 1227,
+    "drawCount": 1227,
+    "range": "1~1227",
     "generatedAt": "2026-05-25T02:10:24.565961+00:00",
     "note": "numbers는 1등 당첨번호 6개만 저장했고, bonus는 별도 저장했습니다. 검색은 numbers만 대상으로 합니다."
   },
@@ -15945,6 +15945,19 @@
         28
       ],
       "bonus": 41
+    },
+    {
+      "round": 1227,
+      "date": "2026.6.06",
+      "numbers": [
+        1,
+        14,
+        16,
+        34,
+        41,
+        44
+      ],
+      "bonus": 13
     }
   ]
 }
