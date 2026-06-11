@@ -379,6 +379,12 @@ button:disabled {
   line-height: 1.55;
 }
 
+.paste-guide.status-only {
+  justify-content: flex-end;
+  padding: 14px 18px;
+  display: none;
+}
+
 .status-message {
   min-width: 260px;
   padding: 13px 16px;

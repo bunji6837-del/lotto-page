@@ -721,14 +721,14 @@ export default function App() {
         </button>
       </section>
 
-      <section className="paste-guide">
-        <div>
+      <section className="paste-guide status-only">
+        {/* <div>
           <strong>사용 방법</strong>
           <p>
             로또 화면을 캡처한 뒤 이 페이지에서 <b>Ctrl + V</b>를 누르면 저장됩니다.
             저장 상태에서는 카드 위치가 잠기고, 수정 상태에서만 카드를 움직일 수 있습니다.
           </p>
-        </div>
+        </div> */}
 
         <div className="status-message">{message}</div>
       </section>
