@@ -56,6 +56,14 @@ async function removeStorageFiles(paths) {
   }
 }
 
+const CARD_WIDTH = 286;
+const CARD_GAP = 24;
+const GRID_X = CARD_WIDTH + CARD_GAP;
+const GRID_Y = 330;
+const BOARD_PADDING = 24;
+const AUTO_SCROLL_EDGE = 90;
+const AUTO_SCROLL_SPEED = 22;
+
 export default function App() {
   const [round, setRound] = useState("");
   const [searchRound, setSearchRound] = useState("");
@@ -81,6 +89,7 @@ export default function App() {
 
   const capturesRef = useRef([]);
   const dragRef = useRef(null);
+  const boardWrapRef = useRef(null);
 
   const previewCapture =
     captures.find((capture) => capture.id === previewCaptureId) || null;
@@ -101,6 +110,122 @@ export default function App() {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 3200);
   }, []);
+
+  const getBoardColumnCount = useCallback(() => {
+    const width = boardWrapRef.current?.clientWidth || 1600;
+    return Math.max(1, Math.floor((width - BOARD_PADDING * 2) / GRID_X));
+  }, []);
+
+  const getGridPosition = useCallback(
+    (index) => {
+      const columns = getBoardColumnCount();
+
+      return {
+        x: BOARD_PADDING + (index % columns) * GRID_X,
+        y: BOARD_PADDING + Math.floor(index / columns) * GRID_Y,
+      };
+    },
+    [getBoardColumnCount]
+  );
+
+  const findEmptyPosition = useCallback(
+    (items) => {
+      const columns = getBoardColumnCount();
+
+      const occupied = new Set(
+        items.map((item) => {
+          const col = Math.round((item.x - BOARD_PADDING) / GRID_X);
+          const row = Math.round((item.y - BOARD_PADDING) / GRID_Y);
+
+          return `${col}-${row}`;
+        })
+      );
+
+      for (let index = 0; index < 1000; index += 1) {
+        const col = index % columns;
+        const row = Math.floor(index / columns);
+        const key = `${col}-${row}`;
+
+        if (!occupied.has(key)) {
+          return {
+            x: BOARD_PADDING + col * GRID_X,
+            y: BOARD_PADDING + row * GRID_Y,
+          };
+        }
+      }
+
+      return getGridPosition(items.length);
+    },
+    [getBoardColumnCount, getGridPosition]
+  );
+
+  const findNearestFreePosition = useCallback(
+    (targetId, x, y) => {
+      const columns = getBoardColumnCount();
+
+      const occupied = new Set(
+        capturesRef.current
+          .filter((item) => item.id !== targetId)
+          .map((item) => {
+            const col = Math.round((item.x - BOARD_PADDING) / GRID_X);
+            const row = Math.round((item.y - BOARD_PADDING) / GRID_Y);
+
+            return `${col}-${row}`;
+          })
+      );
+
+      const startCol = Math.max(0, Math.round((x - BOARD_PADDING) / GRID_X));
+      const startRow = Math.max(0, Math.round((y - BOARD_PADDING) / GRID_Y));
+
+      for (let radius = 0; radius < 80; radius += 1) {
+        const minRow = Math.max(0, startRow - radius);
+        const maxRow = startRow + radius;
+        const minCol = Math.max(0, startCol - radius);
+        const maxCol = Math.min(columns - 1, startCol + radius);
+
+        for (let row = minRow; row <= maxRow; row += 1) {
+          for (let col = minCol; col <= maxCol; col += 1) {
+            const key = `${col}-${row}`;
+
+            if (!occupied.has(key)) {
+              return {
+                x: BOARD_PADDING + col * GRID_X,
+                y: BOARD_PADDING + row * GRID_Y,
+              };
+            }
+          }
+        }
+      }
+
+      return {
+        x: BOARD_PADDING,
+        y: BOARD_PADDING,
+      };
+    },
+    [getBoardColumnCount]
+  );
+
+  const getSlotFromPosition = useCallback(
+    (x, y) => {
+      const columns = getBoardColumnCount();
+
+      const col = Math.min(
+        columns - 1,
+        Math.max(0, Math.round((x - BOARD_PADDING) / GRID_X))
+      );
+
+      const row = Math.max(0, Math.round((y - BOARD_PADDING) / GRID_Y));
+
+      return {
+        col,
+        row,
+        key: `${col}-${row}`,
+        x: BOARD_PADDING + col * GRID_X,
+        y: BOARD_PADDING + row * GRID_Y,
+      };
+    },
+    [getBoardColumnCount]
+  );
 
   const handleToggleBoardMode = () => {
     const next = boardMode === "editing" ? "locked" : "editing";
@@ -244,11 +369,11 @@ export default function App() {
   const addImageCapture = useCallback(
     async (file) => {
       const safeRound = round.trim() || "미지정";
-      const count = capturesRef.current.length;
       const maxZIndex = capturesRef.current.reduce((max, item) => {
         return Math.max(max, item.zIndex || 1);
       }, 1);
 
+      const emptyPosition = findEmptyPosition(capturesRef.current);
       const imagePath = makeImagePath(safeRound, file);
 
       const { error: uploadError } = await supabase.storage
@@ -273,8 +398,8 @@ export default function App() {
         round: safeRound,
         image_path: imagePath,
         image_url: imageUrl,
-        x: 24 + (count % 5) * 34,
-        y: 24 + (count % 5) * 34,
+        x: emptyPosition.x,
+        y: emptyPosition.y,
         z_index: maxZIndex + 1,
       };
 
@@ -305,7 +430,7 @@ export default function App() {
       setMessage(`${safeRound}회차 캡처가 Supabase에 저장되었습니다.`);
       showToast(`${safeRound}회차 캡처가 저장되었습니다.`, "success");
     },
-    [round, showToast]
+    [round, showToast, findEmptyPosition]
   );
 
   const handlePaste = useCallback(
@@ -367,10 +492,53 @@ export default function App() {
     const handlePointerMove = (event) => {
       if (!dragRef.current) return;
 
-      const { id, startX, startY, originalX, originalY } = dragRef.current;
+      const boardEl = boardWrapRef.current;
 
-      const nextX = Math.max(0, originalX + event.clientX - startX);
-      const nextY = Math.max(0, originalY + event.clientY - startY);
+      if (boardEl) {
+        const rect = boardEl.getBoundingClientRect();
+
+        if (event.clientX > rect.right - AUTO_SCROLL_EDGE) {
+          boardEl.scrollLeft += AUTO_SCROLL_SPEED;
+        }
+
+        if (event.clientX < rect.left + AUTO_SCROLL_EDGE) {
+          boardEl.scrollLeft -= AUTO_SCROLL_SPEED;
+        }
+
+        if (event.clientY > rect.bottom - AUTO_SCROLL_EDGE) {
+          boardEl.scrollTop += AUTO_SCROLL_SPEED;
+        }
+
+        if (event.clientY < rect.top + AUTO_SCROLL_EDGE) {
+          boardEl.scrollTop -= AUTO_SCROLL_SPEED;
+        }
+      }
+
+      const {
+        id,
+        startX,
+        startY,
+        originalX,
+        originalY,
+        startScrollLeft,
+        startScrollTop,
+      } = dragRef.current;
+
+      const scrollLeftDiff = boardEl ? boardEl.scrollLeft - startScrollLeft : 0;
+      const scrollTopDiff = boardEl ? boardEl.scrollTop - startScrollTop : 0;
+
+      const nextX = Math.max(
+        0,
+        originalX + event.clientX - startX + scrollLeftDiff
+      );
+
+      const nextY = Math.max(
+        0,
+        originalY + event.clientY - startY + scrollTopDiff
+      );
+
+      dragRef.current.lastX = nextX;
+      dragRef.current.lastY = nextY;
 
       setCaptures((prev) =>
         prev.map((capture) =>
@@ -388,29 +556,97 @@ export default function App() {
     const handlePointerUp = async () => {
       if (!dragRef.current) return;
 
-      const { id, zIndex } = dragRef.current;
+      const { id, zIndex, lastX, lastY, originalX, originalY } =
+        dragRef.current;
+
       dragRef.current = null;
 
       const latest = capturesRef.current.find((capture) => capture.id === id);
 
       if (!latest) return;
 
-      try {
-        const { error } = await supabase
-          .from("lotto_captures")
-          .update({
-            x: latest.x,
-            y: latest.y,
-            z_index: zIndex,
-          })
-          .eq("id", id);
+      const targetX = typeof lastX === "number" ? lastX : latest.x;
+      const targetY = typeof lastY === "number" ? lastY : latest.y;
 
-        if (error) {
-          throw error;
+      const targetSlot = getSlotFromPosition(targetX, targetY);
+      const sourceSlot = getSlotFromPosition(originalX, originalY);
+
+      const swapTarget = capturesRef.current.find((capture) => {
+        if (capture.id === id) return false;
+
+        const captureSlot = getSlotFromPosition(capture.x, capture.y);
+
+        return captureSlot.key === targetSlot.key;
+      });
+
+      let updates = [];
+
+      if (swapTarget) {
+        updates = [
+          {
+            id,
+            x: swapTarget.x,
+            y: swapTarget.y,
+            zIndex,
+          },
+          {
+            id: swapTarget.id,
+            x: sourceSlot.x,
+            y: sourceSlot.y,
+            zIndex: swapTarget.zIndex || 1,
+          },
+        ];
+      } else {
+        const snappedPosition = findNearestFreePosition(id, targetX, targetY);
+
+        updates = [
+          {
+            id,
+            x: snappedPosition.x,
+            y: snappedPosition.y,
+            zIndex,
+          },
+        ];
+      }
+
+      setCaptures((prev) =>
+        prev.map((capture) => {
+          const update = updates.find((item) => item.id === capture.id);
+
+          if (!update) return capture;
+
+          return {
+            ...capture,
+            x: update.x,
+            y: update.y,
+            zIndex: update.zIndex,
+          };
+        })
+      );
+
+      try {
+        for (const update of updates) {
+          const { error } = await supabase
+            .from("lotto_captures")
+            .update({
+              x: update.x,
+              y: update.y,
+              z_index: update.zIndex,
+            })
+            .eq("id", update.id);
+
+          if (error) {
+            throw error;
+          }
         }
 
-        setMessage("위치가 Supabase에 저장되었습니다.");
-        showToast("위치가 저장되었습니다.", "success");
+        if (swapTarget) {
+          setMessage("카드 위치가 서로 바뀌고 Supabase에 저장되었습니다.");
+          showToast("카드 위치가 서로 바뀌었습니다.", "success");
+        } else {
+          setMessage("위치가 Supabase에 저장되었습니다.");
+          showToast("위치가 저장되었습니다.", "success");
+        }
       } catch (error) {
         console.error(error);
         setMessage("위치 저장 중 오류가 발생했습니다.");
@@ -425,7 +661,7 @@ export default function App() {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [showToast]);
+  }, [showToast, findNearestFreePosition, getSlotFromPosition]);
 
   const startDrag = (event, capture) => {
     if (event.button !== 0) return;
@@ -443,6 +679,7 @@ export default function App() {
     }, 1);
 
     const nextZIndex = maxZIndex + 1;
+    const boardEl = boardWrapRef.current;
 
     dragRef.current = {
       id: capture.id,
@@ -450,8 +687,14 @@ export default function App() {
       startY: event.clientY,
       originalX: capture.x,
       originalY: capture.y,
+      lastX: capture.x,
+      lastY: capture.y,
+      startScrollLeft: boardEl?.scrollLeft || 0,
+      startScrollTop: boardEl?.scrollTop || 0,
       zIndex: nextZIndex,
     };
+
+    event.preventDefault();
 
     setCaptures((prev) =>
       prev.map((item) =>
@@ -595,12 +838,16 @@ export default function App() {
       return;
     }
 
-    const arranged = captures.map((capture, index) => ({
-      ...capture,
-      x: 24 + (index % 4) * 310,
-      y: 24 + Math.floor(index / 4) * 320,
-      zIndex: index + 1,
-    }));
+    const arranged = captures.map((capture, index) => {
+      const position = getGridPosition(index);
+
+      return {
+        ...capture,
+        x: position.x,
+        y: position.y,
+        zIndex: index + 1,
+      };
+    });
 
     try {
       for (const capture of arranged) {
@@ -722,19 +969,11 @@ export default function App() {
       </section>
 
       <section className="paste-guide status-only">
-        {/* <div>
-          <strong>사용 방법</strong>
-          <p>
-            로또 화면을 캡처한 뒤 이 페이지에서 <b>Ctrl + V</b>를 누르면 저장됩니다.
-            저장 상태에서는 카드 위치가 잠기고, 수정 상태에서만 카드를 움직일 수 있습니다.
-          </p>
-        </div> */}
-
         <div className="status-message">{message}</div>
       </section>
 
       <section className="workspace">
-        <main className="board-wrap">
+        <main className="board-wrap" ref={boardWrapRef}>
           <div className="board">
             {isLoading && <div className="empty-box">불러오는 중입니다.</div>}
 
@@ -838,7 +1077,7 @@ export default function App() {
             <textarea
               value={pageMemo}
               onChange={(event) => setPageMemo(event.target.value)}
-              placeholder="여기에 자유롭게 메모하세요. 이 메모장은 특정 사진이 아니라 웹페이지 전체 메모장입니다. 입력 후 잠시 멈추면 Supabase에 자동 저장됩니다."
+              placeholder="여기에 자유롭게 메모하세요. 입력 후 잠시 멈추면 Supabase에 자동 저장됩니다."
             />
 
             <div className="memo-modal-footer">

@@ -16,7 +16,9 @@
       --hit: #fff3b0;
       --match: #ffe600;
       --bonus: #d7dbe2;
+      --bonus-match: #38bdf8;
       --danger: #dc2626;
+      --green: #16a34a;
     }
 
     * {
@@ -76,17 +78,55 @@
       font-size: 15px;
     }
 
+    .search-panel {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      padding: 18px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      margin: 18px 0 14px;
+    }
+
+    .search-panel + .search-panel {
+      margin-top: 14px;
+    }
+
+    .search-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .search-title h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .search-title p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     .search-box {
       display: flex;
       gap: 10px;
-      align-items: center;
+      align-items: end;
       flex-wrap: wrap;
-      background: var(--card);
-      border: 1px solid #e5e7eb;
-      padding: 16px;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-      margin: 18px 0 14px;
     }
 
     .field {
@@ -142,9 +182,17 @@
       background: #4b5563;
     }
 
+    .fixed-search-btn {
+      background: #065f46;
+    }
+
+    .fixed-search-btn:hover {
+      background: #047857;
+    }
+
     .status {
       min-height: 28px;
-      margin: 8px 0 18px;
+      margin: 10px 0 18px;
       font-weight: 700;
       color: #1f2937;
     }
@@ -249,9 +297,22 @@
       border: 2px solid #f59e0b;
     }
 
+    .fixed-match-num {
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 900;
+      border: 2px solid #15803d;
+    }
+
     .bonus-cell {
       background: var(--bonus);
       font-weight: 700;
+    }
+
+    .bonus-match-cell {
+      background: var(--bonus-match);
+      color: #082f49;
+      font-weight: 900;
     }
 
     .empty {
@@ -279,12 +340,17 @@
         font-size: 24px;
       }
 
+      .search-title {
+        flex-direction: column;
+      }
+
       .summary {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       input[type="number"] {
         width: 100%;
+        font-size: 16px;
       }
 
       .field {
@@ -293,6 +359,7 @@
 
       button {
         width: 100%;
+        font-size: 16px;
       }
     }
   </style>
@@ -305,36 +372,98 @@
     <section class="top">
       <h1>로또 번호 흐름 분석</h1>
       <p class="desc">
-        숫자 <strong>2개부터 4개까지</strong> 입력하면 해당 숫자들이
-        <strong>1등 당첨번호 6개</strong> 안에 같이 나온 회차를 찾고,
-        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong>
-        4주 흐름을 표로 보여줍니다. 보너스 번호는 검색 대상에서 제외됩니다.
+        숫자 <strong>2개부터 4개까지</strong> 입력해서 같이 나온 회차를 찾거나,
+        <strong>1구~6구 / 보볼</strong> 자리를 고정해서 특정 자리 조건에 맞는 회차를 찾을 수 있습니다.
+        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong> 4주 흐름을 표로 보여줍니다.
       </p>
     </section>
 
-    <section class="search-box">
-      <div class="field">
-        <label for="num1">첫 번째 숫자</label>
-        <input id="num1" type="number" min="1" max="45" placeholder="예: 4" />
+    <section class="search-panel">
+      <div class="search-title">
+        <div>
+          <h2>숫자 동시 출현 검색</h2>
+          <p>입력한 숫자들이 1등 당첨번호 6개 안에 같이 나온 회차를 찾습니다. 보너스 번호는 제외됩니다.</p>
+        </div>
+        <span class="badge">2~4개 검색</span>
       </div>
 
-      <div class="field">
-        <label for="num2">두 번째 숫자</label>
-        <input id="num2" type="number" min="1" max="45" placeholder="예: 17" />
+      <div class="search-box">
+        <div class="field">
+          <label for="num1">첫 번째 숫자</label>
+          <input id="num1" type="number" min="1" max="45" placeholder="예: 4" />
+        </div>
+
+        <div class="field">
+          <label for="num2">두 번째 숫자</label>
+          <input id="num2" type="number" min="1" max="45" placeholder="예: 17" />
+        </div>
+
+        <div class="field">
+          <label for="num3">세 번째 숫자</label>
+          <input id="num3" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <div class="field">
+          <label for="num4">네 번째 숫자</label>
+          <input id="num4" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <button type="button" onclick="searchCombo()">검색</button>
+        <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+      </div>
+    </section>
+
+    <section class="search-panel">
+      <div class="search-title">
+        <div>
+          <h2>자리 고정 검색</h2>
+          <p>
+            1구~6구는 당첨번호 순서 자리이고, 보볼은 보너스 번호입니다.
+            예: 2구에 14, 보볼에 13을 넣으면 그 조건에 맞는 회차만 찾습니다.
+          </p>
+        </div>
+        <span class="badge">자리 조건 검색</span>
       </div>
 
-      <div class="field">
-        <label for="num3">세 번째 숫자</label>
-        <input id="num3" type="number" min="1" max="45" placeholder="선택" />
-      </div>
+      <div class="search-box">
+        <div class="field">
+          <label for="pos1">1구</label>
+          <input id="pos1" type="number" min="1" max="45" placeholder="선택" />
+        </div>
 
-      <div class="field">
-        <label for="num4">네 번째 숫자</label>
-        <input id="num4" type="number" min="1" max="45" placeholder="선택" />
-      </div>
+        <div class="field">
+          <label for="pos2">2구</label>
+          <input id="pos2" type="number" min="1" max="45" placeholder="예: 14" />
+        </div>
 
-      <button type="button" onclick="searchLotto()">검색</button>
-      <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+        <div class="field">
+          <label for="pos3">3구</label>
+          <input id="pos3" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <div class="field">
+          <label for="pos4">4구</label>
+          <input id="pos4" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <div class="field">
+          <label for="pos5">5구</label>
+          <input id="pos5" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <div class="field">
+          <label for="pos6">6구</label>
+          <input id="pos6" type="number" min="1" max="45" placeholder="선택" />
+        </div>
+
+        <div class="field">
+          <label for="bonus">보볼</label>
+          <input id="bonus" type="number" min="1" max="45" placeholder="예: 13" />
+        </div>
+
+        <button type="button" class="fixed-search-btn" onclick="searchFixed()">자리 검색</button>
+        <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+      </div>
     </section>
 
     <div id="status" class="status">데이터 불러오는 중...</div>
@@ -352,7 +481,9 @@
 
   <script>
     const STORAGE_KEY = "lotto-table-last-search";
-    const INPUT_IDS = ["num1", "num2", "num3", "num4"];
+    const COMBO_INPUT_IDS = ["num1", "num2", "num3", "num4"];
+    const POSITION_INPUT_IDS = ["pos1", "pos2", "pos3", "pos4", "pos5", "pos6"];
+    const POSITION_LABELS = ["1구", "2구", "3구", "4구", "5구", "6구"];
 
     let LOTTO_DRAWS = [];
     let LOTTO_MAP = new Map();
@@ -379,7 +510,7 @@
         const latestRound = META.latestRound || LOTTO_DRAWS.length;
 
         setStatus(
-          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개 이상, 최대 4개까지 입력하고 검색하세요.`,
+          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색 또는 자리 고정 검색을 선택하세요.`,
           false
         );
 
@@ -401,13 +532,20 @@
 
       try {
         const parsed = JSON.parse(saved);
+
+        if (parsed.mode === "fixed" && parsed.filters) {
+          fillFixedInputs(parsed.filters);
+          searchFixed(false);
+          return;
+        }
+
         const numbers = Array.isArray(parsed.numbers)
           ? parsed.numbers
           : [parsed.num1, parsed.num2].filter(Boolean);
 
-        if (isValidSearchNumbers(numbers)) {
-          fillInputs(numbers);
-          searchLotto(false);
+        if (isValidComboNumbers(numbers)) {
+          fillComboInputs(numbers);
+          searchCombo(false);
           return;
         }
 
@@ -419,28 +557,25 @@
       }
     }
 
-    function saveLastSearch(numbers) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          numbers,
-        })
-      );
-    }
-
     function resetSearch() {
       localStorage.removeItem(STORAGE_KEY);
 
-      INPUT_IDS.forEach((id) => {
+      COMBO_INPUT_IDS.forEach((id) => {
         document.getElementById(id).value = "";
       });
+
+      POSITION_INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+
+      document.getElementById("bonus").value = "";
 
       clearResult();
 
       const latestRound = META?.latestRound || LOTTO_DRAWS.length;
 
       setStatus(
-        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 2개 이상, 최대 4개까지 입력하고 검색하세요.`,
+        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색 또는 자리 고정 검색을 선택하세요.`,
         false
       );
     }
@@ -457,45 +592,62 @@
       status.className = isError ? "status error" : "status";
     }
 
-    function getInputNumbers() {
-      return INPUT_IDS.map((id) => {
-        const rawValue = document.getElementById(id).value.trim();
+    function getNumberFromInput(id) {
+      const rawValue = document.getElementById(id).value.trim();
 
-        if (rawValue === "") {
-          return null;
-        }
+      if (rawValue === "") {
+        return null;
+      }
 
-        const value = Number(rawValue);
+      const value = Number(rawValue);
 
-        return Number.isInteger(value) ? value : NaN;
-      }).filter((value) => value !== null);
+      return Number.isInteger(value) ? value : NaN;
     }
 
     function validateNumber(n) {
       return Number.isInteger(n) && n >= 1 && n <= 45;
     }
 
-    function isValidSearchNumbers(numbers) {
-      if (!Array.isArray(numbers)) return false;
-      if (numbers.length < 2 || numbers.length > 4) return false;
-      if (!numbers.every(validateNumber)) return false;
-
-      const unique = new Set(numbers);
-      return unique.size === numbers.length;
+    function getComboNumbers() {
+      return COMBO_INPUT_IDS.map(getNumberFromInput).filter((value) => value !== null);
     }
 
     function normalizeNumbers(numbers) {
       return [...numbers].sort((a, b) => a - b);
     }
 
-    function fillInputs(numbers) {
-      INPUT_IDS.forEach((id, index) => {
-        document.getElementById(id).value = numbers[index] || "";
+    function isValidComboNumbers(numbers) {
+      if (!Array.isArray(numbers)) return false;
+      if (numbers.length < 2 || numbers.length > 4) return false;
+      if (!numbers.every(validateNumber)) return false;
+
+      const unique = new Set(numbers);
+
+      return unique.size === numbers.length;
+    }
+
+    function fillComboInputs(numbers) {
+      const normalized = normalizeNumbers(numbers);
+
+      COMBO_INPUT_IDS.forEach((id, index) => {
+        document.getElementById(id).value = normalized[index] || "";
       });
     }
 
-    function searchLotto(shouldSave = true) {
-      const inputNumbers = getInputNumbers();
+    function saveComboSearch(numbers) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          mode: "combo",
+          numbers,
+        })
+      );
+    }
+
+    function searchCombo(shouldSave = true) {
+      clearFixedInputs();
+
+      const inputNumbers = getComboNumbers();
       const summary = document.getElementById("summary");
       const result = document.getElementById("result");
 
@@ -530,10 +682,10 @@
       }
 
       const searchNumbers = normalizeNumbers(inputNumbers);
-      fillInputs(searchNumbers);
+      fillComboInputs(searchNumbers);
 
       if (shouldSave) {
-        saveLastSearch(searchNumbers);
+        saveComboSearch(searchNumbers);
       }
 
       const hits = LOTTO_DRAWS.filter((item) => {
@@ -547,7 +699,12 @@
         false
       );
 
-      renderSummary(searchNumbers, hits);
+      renderSummary({
+        mode: "combo",
+        title: "숫자 동시 출현",
+        conditionLabel: searchNumbers.join(", "),
+        hits,
+      });
 
       if (!hits.length) {
         result.innerHTML = `
@@ -559,20 +716,200 @@
         return;
       }
 
-      hits.forEach((hit) => renderBlock(hit, searchNumbers));
+      hits.forEach((hit) =>
+        renderBlock(hit, {
+          mode: "combo",
+          searchNumbers,
+        })
+      );
+    }
+
+    function getFixedFilters() {
+      const positions = POSITION_INPUT_IDS.map(getNumberFromInput);
+      const bonus = getNumberFromInput("bonus");
+
+      return {
+        positions,
+        bonus,
+      };
+    }
+
+    function clearComboInputs() {
+      COMBO_INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+    }
+
+    function clearFixedInputs() {
+      POSITION_INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+
+      document.getElementById("bonus").value = "";
+    }
+
+    function fillFixedInputs(filters) {
+      POSITION_INPUT_IDS.forEach((id, index) => {
+        document.getElementById(id).value = filters.positions?.[index] || "";
+      });
+
+      document.getElementById("bonus").value = filters.bonus || "";
+    }
+
+    function getFixedConditionItems(filters) {
+      const items = [];
+
+      filters.positions.forEach((value, index) => {
+        if (value !== null && value !== "") {
+          items.push({
+            type: "position",
+            index,
+            label: POSITION_LABELS[index],
+            value,
+          });
+        }
+      });
+
+      if (filters.bonus !== null && filters.bonus !== "") {
+        items.push({
+          type: "bonus",
+          label: "보볼",
+          value: filters.bonus,
+        });
+      }
+
+      return items;
+    }
+
+    function validateFixedFilters(filters) {
+      const items = getFixedConditionItems(filters);
+
+      if (items.length === 0) {
+        return {
+          ok: false,
+          message: "1구~6구 또는 보볼 중 최소 1개 이상 입력해야 합니다.",
+        };
+      }
+
+      const values = items.map((item) => item.value);
+
+      if (!values.every(validateNumber)) {
+        return {
+          ok: false,
+          message: "1부터 45 사이 숫자만 입력해야 합니다.",
+        };
+      }
+
+      return {
+        ok: true,
+        message: "",
+      };
+    }
+
+    function makeFixedConditionLabel(filters) {
+      const items = getFixedConditionItems(filters);
+
+      return items.map((item) => `${item.label} ${item.value}`).join(" / ");
+    }
+
+    function saveFixedSearch(filters) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          mode: "fixed",
+          filters,
+        })
+      );
+    }
+
+    function searchFixed(shouldSave = true) {
+      clearComboInputs();
+
+      const filters = getFixedFilters();
+      const summary = document.getElementById("summary");
+      const result = document.getElementById("result");
+
+      summary.innerHTML = "";
+      result.innerHTML = "";
+
+      if (!LOTTO_DRAWS.length) {
+        setStatus("데이터가 아직 없습니다.", true);
+        return;
+      }
+
+      const validation = validateFixedFilters(filters);
+
+      if (!validation.ok) {
+        setStatus(validation.message, true);
+        return;
+      }
+
+      if (shouldSave) {
+        saveFixedSearch(filters);
+      }
+
+      const conditionLabel = makeFixedConditionLabel(filters);
+
+      const hits = LOTTO_DRAWS.filter((item) => {
+        const nums = item.numbers || [];
+
+        const positionMatched = filters.positions.every((value, index) => {
+          if (value === null || value === "") return true;
+
+          return nums[index] === value;
+        });
+
+        const bonusMatched =
+          filters.bonus === null || filters.bonus === ""
+            ? true
+            : Number(item.bonus) === Number(filters.bonus);
+
+        return positionMatched && bonusMatched;
+      });
+
+      setStatus(`${conditionLabel} 조건에 맞는 회차: ${hits.length}개`, false);
+
+      renderSummary({
+        mode: "fixed",
+        title: "자리 고정 검색",
+        conditionLabel,
+        hits,
+      });
+
+      if (!hits.length) {
+        result.innerHTML = `
+          <div class="block">
+            <strong>검색 결과 없음</strong>
+            <div class="small">입력한 자리 조건에 맞는 회차가 없습니다.</div>
+          </div>
+        `;
+        return;
+      }
+
+      hits.forEach((hit) =>
+        renderBlock(hit, {
+          mode: "fixed",
+          filters,
+          conditionLabel,
+        })
+      );
     }
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Enter") {
-        const activeTag = document.activeElement?.tagName?.toLowerCase();
+        const activeId = document.activeElement?.id;
 
-        if (activeTag === "input") {
-          searchLotto();
+        if (COMBO_INPUT_IDS.includes(activeId)) {
+          searchCombo();
+        }
+
+        if (POSITION_INPUT_IDS.includes(activeId) || activeId === "bonus") {
+          searchFixed();
         }
       }
     });
 
-    function renderSummary(searchNumbers, hits) {
+    function renderSummary({ mode, title, conditionLabel, hits }) {
       const latest =
         META?.latestRound || Math.max(...LOTTO_DRAWS.map((x) => x.round));
 
@@ -582,18 +919,18 @@
       document.getElementById("summary").innerHTML = `
         <section class="summary">
           <div class="summary-card">
-            <div class="label">검색 번호</div>
-            <div class="value">${searchNumbers.join(", ")}</div>
+            <div class="label">검색 방식</div>
+            <div class="value">${title}</div>
           </div>
 
           <div class="summary-card">
-            <div class="label">동시 출현 횟수</div>
+            <div class="label">검색 조건</div>
+            <div class="value">${conditionLabel}</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">일치 회차 수</div>
             <div class="value">${hits.length}회</div>
-          </div>
-
-          <div class="summary-card">
-            <div class="label">첫 출현 회차</div>
-            <div class="value">${firstHit ? firstHit.round + "회" : "-"}</div>
           </div>
 
           <div class="summary-card">
@@ -603,6 +940,12 @@
         </section>
 
         ${
+          firstHit
+            ? `<div class="small">첫 출현: ${firstHit.round}회 (${firstHit.date})</div>`
+            : ""
+        }
+
+        ${
           lastHit
             ? `<div class="small">마지막 출현: ${lastHit.round}회 (${lastHit.date})</div>`
             : ""
@@ -610,7 +953,7 @@
       `;
     }
 
-    function renderBlock(hit, searchNumbers) {
+    function renderBlock(hit, context) {
       const rows = [
         LOTTO_MAP.get(hit.round - 2),
         LOTTO_MAP.get(hit.round - 1),
@@ -629,19 +972,19 @@
             <tr>
               <th>회차</th>
               <th>추첨일</th>
-              <th>1번</th>
-              <th>2번</th>
-              <th>3번</th>
-              <th>4번</th>
-              <th>5번</th>
-              <th>6번</th>
-              <th>보너스</th>
+              <th>1구</th>
+              <th>2구</th>
+              <th>3구</th>
+              <th>4구</th>
+              <th>5구</th>
+              <th>6구</th>
+              <th>보볼</th>
               <th>비고</th>
             </tr>
           </thead>
 
           <tbody>
-            ${rows.map((row) => makeRow(row, hit.round, searchNumbers)).join("")}
+            ${rows.map((row) => makeRow(row, hit.round, context)).join("")}
           </tbody>
         </table>
       `;
@@ -649,7 +992,7 @@
       document.getElementById("result").appendChild(block);
     }
 
-    function makeRow(row, hitRound, searchNumbers) {
+    function makeRow(row, hitRound, context) {
       if (!row) {
         return `
           <tr>
@@ -670,24 +1013,55 @@
       const isHit = Number(row.round) === Number(hitRound);
 
       const numbersHtml = row.numbers
-        .map((num) => {
-          const isMatch = isHit && searchNumbers.includes(num);
+        .map((num, index) => {
+          let className = "";
+
+          if (isHit && context.mode === "combo" && context.searchNumbers.includes(num)) {
+            className = "match-num";
+          }
+
+          if (
+            isHit &&
+            context.mode === "fixed" &&
+            context.filters.positions[index] !== null &&
+            context.filters.positions[index] !== "" &&
+            Number(context.filters.positions[index]) === Number(num)
+          ) {
+            className = "fixed-match-num";
+          }
 
           return `
             <td>
-              <span class="num ${isMatch ? "match-num" : ""}">${num}</span>
+              <span class="num ${className}">${num}</span>
             </td>
           `;
         })
         .join("");
+
+      const isBonusMatched =
+        isHit &&
+        context.mode === "fixed" &&
+        context.filters.bonus !== null &&
+        context.filters.bonus !== "" &&
+        Number(context.filters.bonus) === Number(row.bonus);
+
+      let note = "";
+
+      if (isHit && context.mode === "combo") {
+        note = `${context.searchNumbers.join(", ")} 나온 회차`;
+      }
+
+      if (isHit && context.mode === "fixed") {
+        note = `${context.conditionLabel} 일치`;
+      }
 
       return `
         <tr class="${isHit ? "hit-row" : ""}">
           <td>${row.round}</td>
           <td>${row.date}</td>
           ${numbersHtml}
-          <td class="bonus-cell">${row.bonus}</td>
-          <td>${isHit ? `${searchNumbers.join(", ")} 나온 회차` : ""}</td>
+          <td class="bonus-cell ${isBonusMatched ? "bonus-match-cell" : ""}">${row.bonus}</td>
+          <td>${note}</td>
         </tr>
       `;
     }
