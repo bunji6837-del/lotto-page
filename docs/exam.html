@@ -3,777 +3,422 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>정보시스템보안 기말대비</title>
+  <title>기말고사 임시 정리 페이지</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, "Noto Sans KR", sans-serif;
-      background: #f4f6fb;
-      color: #222;
-      line-height: 1.6;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #111827;
-      color: #fff;
-      padding: 18px 20px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 23px;
-    }
-
-    header p {
-      margin: 6px 0 0;
-      font-size: 14px;
-      color: #d1d5db;
-    }
-
-    .container {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-      background: #fff;
-      padding: 14px;
-      border-radius: 14px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-    }
-
-    .nav a {
-      text-decoration: none;
-      background: #2563eb;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .note {
-      background: #fff7ed;
-      border-left: 5px solid #f97316;
-      padding: 13px 15px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      color: #7c2d12;
-      font-weight: 800;
-    }
-
-    .chapter {
-      background: #fff;
-      margin-bottom: 24px;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    }
-
-    .chapter h2 {
-      margin: 0 0 16px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e5e7eb;
-      color: #111827;
-    }
-
-    .question-card {
-      margin: 15px 0;
-      padding: 15px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-left: 5px solid #2563eb;
-      border-radius: 12px;
-    }
-
-    .question {
-      font-weight: 900;
-      color: #111827;
-      margin-bottom: 10px;
-    }
-
-    .choices {
-      display: grid;
-      gap: 7px;
-      margin-top: 8px;
-    }
-
-    .choice {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-weight: 600;
-    }
-
-    .correct {
-      color: #dc2626;
-      background: #fee2e2;
-      border-color: #fecaca;
-      font-weight: 900;
-    }
-
-    .short-answer {
-      margin-top: 8px;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 10px;
-    }
-
-    .answer-title {
-      color: #dc2626;
-      font-weight: 900;
-      margin-right: 5px;
-    }
-
-    .code {
-      display: inline-block;
-      background: #111827;
-      color: #f9fafb;
-      padding: 3px 7px;
-      border-radius: 6px;
-      font-family: Consolas, monospace;
-      font-size: 14px;
-      margin: 2px 0;
-    }
-
-    .top-btn {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      border: none;
-      border-radius: 50px;
-      background: #111827;
-      color: #fff;
-      padding: 12px 16px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 18px;
-      }
-
-      .container {
-        padding: 14px;
-      }
-
-      .chapter {
-        padding: 15px;
-      }
-
-      .question-card {
-        padding: 12px;
-      }
-
-      .choice {
-        font-size: 14px;
-      }
-    }
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;line-height:1.65;word-break:keep-all}
+    .wrap{max-width:1080px;margin:0 auto;padding:18px}
+    header{background:linear-gradient(135deg,#173ea5,#2976ff);color:white;border-radius:24px;padding:30px 24px;margin-bottom:16px;box-shadow:0 8px 24px rgba(24,32,51,.1)}
+    header h1{margin:0 0 8px;font-size:clamp(26px,4vw,42px);line-height:1.25}
+    header p{margin:0;color:rgba(255,255,255,.9)}
+    nav{position:sticky;top:0;z-index:10;margin:0 -18px 18px;padding:10px 18px;background:rgba(244,247,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid #dfe5f2;overflow-x:auto;white-space:nowrap}
+    nav a{display:inline-block;margin-right:7px;padding:8px 12px;border-radius:999px;background:white;border:1px solid #dfe5f2;color:#172033;text-decoration:none;font-size:14px;font-weight:700}
+    section{background:white;border:1px solid #dfe5f2;border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 8px 24px rgba(24,32,51,.08)}
+    h2{margin:0 0 14px;font-size:26px;border-left:6px solid #2456d6;padding-left:12px}
+    h3{margin:24px 0 10px;font-size:21px}
+    h4{margin:18px 0 8px;font-size:17px}
+    p{margin:8px 0}
+    table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:15px}
+    th,td{border:1px solid #dfe5f2;padding:10px 12px;vertical-align:top}
+    th{background:#eef3ff;text-align:left}
+    tr:nth-child(even) td{background:#fbfcff}
+    pre{background:#111827;color:#f8fafc;border-radius:14px;padding:16px;overflow-x:auto;font-size:15px;line-height:1.55}
+    code{font-family:Consolas,Monaco,"Courier New",monospace}
+    .red{color:#d62828;font-weight:900}
+    .blue{color:#143b9e;font-weight:900}
+    .box{background:#fff4cc;border:1px solid #f2d27a;border-radius:14px;padding:14px 16px;margin:14px 0}
+    .tag{display:inline-block;padding:3px 8px;background:#eef3ff;color:#143b9e;border-radius:8px;font-family:Consolas,Monaco,"Courier New",monospace;font-weight:800}
+    details{border:1px solid #dfe5f2;border-radius:14px;background:#fbfcff;padding:12px 14px;margin:10px 0}
+    summary{cursor:pointer;font-weight:900;color:#143b9e}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .mini{border:1px solid #dfe5f2;border-radius:14px;background:#fbfcff;padding:15px}
+    .top{position:fixed;right:18px;bottom:18px;background:#2456d6;color:white;text-decoration:none;border-radius:999px;padding:11px 15px;font-weight:900;box-shadow:0 8px 24px rgba(24,32,51,.18)}
+    @media(max-width:760px){.wrap{padding:14px}header{padding:24px 18px}section{padding:18px}.grid{grid-template-columns:1fr}table{font-size:14px}th,td{padding:8px}pre{font-size:14px}nav{margin:0 -14px 16px;padding:10px 14px}}
   </style>
 </head>
-<body>
-  <header>
-    <h1>정보시스템보안 기말대비</h1>
-    <p>5장 ~ 10장 / 보기 포함 / 정답 빨간색 표시</p>
-  </header>
+<body id="top">
+  <div class="wrap">
+    <header>
+      <h1>기말고사 임시 정리 페이지</h1>
+      <p>파이썬 기말 힌트 + 정보시스템기반기술 주관식 3문제 + PPT 문제 합본</p>
+    </header>
 
-  <main class="container">
-    <div class="note">
-      객관식은 보기 1, 2, 3, 4를 모두 표시하고 정답만 빨간색으로 표시함.
-    </div>
-
-    <nav class="nav">
-      <a href="#ch5">5장 셸</a>
-      <a href="#ch6">6장 접근 권한</a>
-      <a href="#ch7">7장 파일 검색/정렬</a>
-      <a href="#ch8">8장 프로세스</a>
-      <a href="#ch9">9장 사용자 계정</a>
-      <a href="#ch10">10장 디스크/압축</a>
+    <nav>
+      <a href="#python">파이썬 힌트</a>
+      <a href="#for">for문</a>
+      <a href="#function">함수 def</a>
+      <a href="#ppt">PPT 문제</a>
+      <a href="#subjective">주관식 3문제</a>
+      <a href="#final">최종 암기</a>
     </nav>
 
-    <section id="ch5" class="chapter">
-      <h2>5장 셸</h2>
+    <section id="python">
+      <h2>1. 파이썬 기말 힌트 전체 흐름</h2>
+      <table>
+        <tr><th>번호</th><th>힌트</th><th>핵심 정답</th></tr>
+        <tr><td>1</td><td>조건이 True인 동안 반복</td><td><span class="red">반복 구조 / while 구조</span></td></tr>
+        <tr><td>2</td><td>if ride_number &lt; 1 or ride_number &gt; 5</td><td><span class="red">1보다 작거나 5보다 클 때 실행</span></td></tr>
+        <tr><td>3</td><td>리스트 개념 객관식 + 추가 주관식</td><td><span class="red">리스트는 [ ], 추가는 append()</span></td></tr>
+        <tr><td>4</td><td>for문 코드완성 + 실행결과 주관식</td><td><span class="red">for 변수 in range():</span></td></tr>
+        <tr><td>5</td><td>함수 정의 명령어</td><td><span class="red">def</span></td></tr>
+        <tr><td>6</td><td>PPT 문제</td><td><span class="red">continue, pop, elif, lambda, type</span></td></tr>
+      </table>
 
-      <div class="question-card">
-        <div class="question">01. 셸의 세 가지 기능에 해당하지 않는 것은 무엇인가?</div>
-        <div class="choices">
-          <div class="choice">① 명령어 해석 기능</div>
-          <div class="choice correct">② 문서 편집 기능</div>
-          <div class="choice">③ 프로그래밍 기능</div>
-          <div class="choice">④ 사용자 환경 설정 기능</div>
+      <h3>1번. 반복 구조 while</h3>
+      <p>조건이 <b>True인 동안</b> 하나 이상의 문장을 반복하는 구조는 <span class="red">반복 구조</span> 또는 <span class="red">while 구조</span>이다.</p>
+      <pre><code>while 조건식:
+    실행문</code></pre>
+
+      <h3>2번. ride_number if문</h3>
+      <pre><code>if ride_number &lt; 1 or ride_number &gt; 5:
+    print("Invalid ride number")</code></pre>
+      <p>이 조건문은 <b>ride_number가 1보다 작거나 5보다 클 때</b> 실행된다.</p>
+      <table>
+        <tr><th>ride_number</th><th>결과</th></tr>
+        <tr><td>0</td><td>1보다 작으므로 출력됨</td></tr>
+        <tr><td>1, 2, 3, 4, 5</td><td>정상 범위라서 출력 안 됨</td></tr>
+        <tr><td>6</td><td>5보다 크므로 출력됨</td></tr>
+      </table>
+      <p><span class="tag">or</span>는 둘 중 하나라도 True면 전체가 True이다.</p>
+
+      <h3>3번. 리스트 개념 + 추가</h3>
+      <p>리스트는 여러 값을 하나의 변수에 저장하는 자료형이다. 대괄호 <span class="tag">[ ]</span>를 사용하고, 인덱스는 0부터 시작한다.</p>
+      <pre><code>numbers = [10, 20, 30]
+print(numbers[0])</code></pre>
+      <p>실행결과: <span class="red">10</span></p>
+      <table>
+        <tr><th>개념</th><th>정답</th></tr>
+        <tr><td>리스트 기호</td><td><span class="red">[ ]</span></td></tr>
+        <tr><td>첫 번째 인덱스</td><td><span class="red">0</span></td></tr>
+        <tr><td>맨 뒤에 추가</td><td><span class="red">append()</span></td></tr>
+        <tr><td>원하는 위치에 추가</td><td><span class="red">insert()</span></td></tr>
+        <tr><td>삭제하면서 꺼내기</td><td><span class="red">pop()</span></td></tr>
+      </table>
+      <h4>리스트 추가 주관식</h4>
+      <pre><code>numbers.append(10)</code></pre>
+      <p>뜻: 리스트 <span class="tag">numbers</span> 맨 뒤에 숫자 10을 추가한다.</p>
+    </section>
+
+    <section id="for">
+      <h2>2. for문 코드완성 + 실행결과 주관식</h2>
+      <h3>for문 기본 공식</h3>
+      <pre><code>for 변수 in 반복대상:
+    실행문</code></pre>
+
+      <h3>range 공식</h3>
+      <table>
+        <tr><th>코드</th><th>의미</th><th>값</th></tr>
+        <tr><td><span class="tag">range(5)</span></td><td>0부터 5 전까지</td><td>0, 1, 2, 3, 4</td></tr>
+        <tr><td><span class="tag">range(1, 6)</span></td><td>1부터 6 전까지</td><td>1, 2, 3, 4, 5</td></tr>
+        <tr><td><span class="tag">range(1, 10, 2)</span></td><td>1부터 10 전까지 2씩 증가</td><td>1, 3, 5, 7, 9</td></tr>
+      </table>
+      <div class="box"><b>중요:</b> range의 끝값은 포함하지 않는다. 1부터 5까지 출력하려면 <span class="tag">range(1, 6)</span>이다.</div>
+
+      <h3>코드완성 예상 문제</h3>
+      <details open>
+        <summary>문제 1. 0부터 4까지 출력</summary>
+        <pre><code>for i in ______:
+    print(i)</code></pre>
+        <p><b>정답</b></p>
+        <pre><code>range(5)</code></pre>
+        <p><b>실행결과</b></p>
+        <pre><code>0
+1
+2
+3
+4</code></pre>
+      </details>
+
+      <details>
+        <summary>문제 2. 1부터 5까지 출력</summary>
+        <pre><code>for i in ______:
+    print(i)</code></pre>
+        <p><b>정답</b></p>
+        <pre><code>range(1, 6)</code></pre>
+        <p><b>실행결과</b></p>
+        <pre><code>1
+2
+3
+4
+5</code></pre>
+      </details>
+
+      <details>
+        <summary>문제 3. 2, 4, 6, 8 출력</summary>
+        <pre><code>for i in range(____, ____, ____):
+    print(i)</code></pre>
+        <p><b>정답</b></p>
+        <pre><code>2, 10, 2</code></pre>
+        <p><b>실행결과</b></p>
+        <pre><code>2
+4
+6
+8</code></pre>
+      </details>
+
+      <details>
+        <summary>문제 4. 리스트 값 하나씩 출력</summary>
+        <pre><code>numbers = [10, 20, 30]
+
+for n in numbers:
+    print(n)</code></pre>
+        <p><b>실행결과</b></p>
+        <pre><code>10
+20
+30</code></pre>
+      </details>
+
+      <h3>실행결과 주관식 예시</h3>
+      <div class="grid">
+        <div class="mini">
+          <h4>예제 A</h4>
+          <pre><code>for i in range(3):
+    print(i)</code></pre>
+          <p>정답</p>
+          <pre><code>0
+1
+2</code></pre>
+        </div>
+        <div class="mini">
+          <h4>예제 B</h4>
+          <pre><code>for i in range(1, 4):
+    print(i * 2)</code></pre>
+          <p>정답</p>
+          <pre><code>2
+4
+6</code></pre>
         </div>
       </div>
 
-      <div class="question-card">
-        <div class="question">03. 사용자 계정의 기본 셸이 저장된 파일은 무엇인가?</div>
-        <div class="choices">
-          <div class="choice">① /etc/shadow</div>
-          <div class="choice">② /etc/group</div>
-          <div class="choice">③ /etc/shells</div>
-          <div class="choice correct">④ /etc/passwd</div>
-        </div>
-      </div>
+      <h3>합계 구하기</h3>
+      <pre><code>total = 0
 
-      <div class="question-card">
-        <div class="question">04. 로그인 셸을 대시셸로 변경하려고 chsh 명령을 실행하였는데 오류가 발생했다. 원인은?</div>
-        <div class="short-answer"><span class="code">$ chsh -s dash user1</span></div>
-        <div class="choices">
-          <div class="choice">① 시스템에 대시셸이 없다.</div>
-          <div class="choice">② 대시셸의 이름은 dsh다.</div>
-          <div class="choice">③ chsh -s user1 dash로 실행해야 한다.</div>
-          <div class="choice correct">④ 바꾸려는 셸을 절대 경로로 지정한다.</div>
-        </div>
-      </div>
+for i in range(1, 6):
+    total = total + i
 
-      <div class="question-card">
-        <div class="question">05. 현재 디렉터리에 파일이 다음과 같이 있을 때 ‘ls t?.exe’ 명령의 실행 결과에서 제외되는 파일은?</div>
-        <div class="choices">
-          <div class="choice correct">① t.exe</div>
-          <div class="choice">② t1.exe</div>
-          <div class="choice">③ t2.exe</div>
-          <div class="choice">④ ta.exe</div>
-        </div>
-      </div>
+print(total)</code></pre>
+      <p>정답: <span class="red">15</span></p>
+      <table>
+        <tr><th>반복</th><th>i</th><th>total</th></tr>
+        <tr><td>시작</td><td>-</td><td>0</td></tr>
+        <tr><td>1번째</td><td>1</td><td>1</td></tr>
+        <tr><td>2번째</td><td>2</td><td>3</td></tr>
+        <tr><td>3번째</td><td>3</td><td>6</td></tr>
+        <tr><td>4번째</td><td>4</td><td>10</td></tr>
+        <tr><td>5번째</td><td>5</td><td>15</td></tr>
+      </table>
 
-      <div class="question-card">
-        <div class="question">07. ls -l &gt;&gt; data 명령을 수행하면 data 파일의 내용은 어떻게 되는가?</div>
-        <div class="choices">
-          <div class="choice">① 기존 내용은 삭제되고, 현재 디렉터리의 상세 내용이 저장된다.</div>
-          <div class="choice">② 기존 내용이 그대로 유지되고 현재 디렉터리의 상세 내용은 화면으로 출력된다.</div>
-          <div class="choice correct">③ 기존 내용의 뒤에, 현재 디렉터리의 상세 내용이 추가된다.</div>
-          <div class="choice">④ 파일 내용이 모두 삭제되고 빈 파일이 된다.</div>
-        </div>
-      </div>
+      <h3>print 위치 차이</h3>
+      <div class="grid">
+        <div class="mini">
+          <h4>print가 for문 안</h4>
+          <pre><code>total = 0
 
-      <div class="question-card">
-        <div class="question">09. 히스토리를 이용하여 명령을 재실행하는 방법이 아닌 것은 무엇인가?</div>
-        <div class="choices">
-          <div class="choice">① !!</div>
-          <div class="choice">② !번호</div>
-          <div class="choice">③ !문자열</div>
-          <div class="choice correct">④ !!번호</div>
+for i in range(1, 4):
+    total = total + i
+    print(total)</code></pre>
+          <pre><code>1
+3
+6</code></pre>
         </div>
-      </div>
+        <div class="mini">
+          <h4>print가 for문 밖</h4>
+          <pre><code>total = 0
 
-      <div class="question-card">
-        <div class="question">10. 우분투 리눅스에서 배시셸의 사용자 환경 설정 파일이 아닌 것은 무엇인가?</div>
-        <div class="choices">
-          <div class="choice correct">① .login</div>
-          <div class="choice">② .profile</div>
-          <div class="choice">③ .bashrc</div>
-          <div class="choice">④ .bash_logout</div>
-        </div>
-      </div>
+for i in range(1, 4):
+    total = total + i
 
-      <div class="question-card">
-        <div class="question">12. 로그인 셸과 서브 셸의 차이는 무엇인지 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          로그인 셸: 사용자가 로그인하면 자동으로 실행되는 기본 셸<br>
-          서브 셸: 사용자가 프롬프트에서 실행한 다른 셸
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">13. userX의 로그인 셸을 대시셸로 바꾸기 위한 명령은 무엇인가?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">chsh -s /bin/dash userX</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">16. 명령의 실행에 따른 표준 출력과 표준 오류를 모두 s.out에 저장하는 명령을 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">명령 &gt; s.out 2&gt;&amp;1</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">20. 수정된 환경 파일인 .profile 파일을 적용하기 위한 세 가지 방법을 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          1. <span class="code">source ./.bashrc</span><br>
-          2. <span class="code">. ./.bashrc</span><br>
-          3. 로그아웃 했다가 다시 로그인한다.
+print(total)</code></pre>
+          <pre><code>6</code></pre>
         </div>
       </div>
     </section>
 
-    <section id="ch6" class="chapter">
-      <h2>6장 접근 권한</h2>
+    <section id="function">
+      <h2>3. 함수 정의 명령어</h2>
+      <p>함수를 정의할 때 사용하는 명령어는 <span class="red">def</span>이다.</p>
+      <pre><code>def 함수이름():
+    실행문</code></pre>
+      <h3>예제 1. 함수 호출</h3>
+      <pre><code>def hello():
+    print("Hello")
 
-      <div class="question-card">
-        <div class="question">01. 리눅스는 접근 권한에서 사용자를 세 카테고리로 구분한다. 이 카테고리에 해당하지 않는 것은?</div>
-        <div class="choices">
-          <div class="choice">① 소유자</div>
-          <div class="choice correct">② 세션</div>
-          <div class="choice">③ 기타 사용자</div>
-          <div class="choice">④ 그룹</div>
-        </div>
-      </div>
+hello()</code></pre>
+      <p>실행결과</p>
+      <pre><code>Hello</code></pre>
 
-      <div class="question-card">
-        <div class="question">02. 리눅스에서 사용하는 접근 권한 표기 문자가 아닌 것은?</div>
-        <div class="choices">
-          <div class="choice">① r</div>
-          <div class="choice">② w</div>
-          <div class="choice">③ x</div>
-          <div class="choice correct">④ a</div>
-        </div>
-      </div>
+      <h3>예제 2. return</h3>
+      <pre><code>def add(a, b):
+    return a + b
 
-      <div class="question-card">
-        <div class="question">03. 디렉터리에 r 권한이 설정되어 있지 않은 경우에 대한 설명으로 옳은 것은?</div>
-        <div class="choices">
-          <div class="choice">① 해당 디렉터리를 삭제할 수 없다.</div>
-          <div class="choice">② 해당 디렉터리에 파일을 생성할 수 없다.</div>
-          <div class="choice correct">③ 해당 디렉터리의 내용을 ls 명령으로 확인할 수 없다.</div>
-          <div class="choice">④ 해당 디렉터리로 이동할 수 없다.</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">04. ls -l 명령의 결과가 다음과 같을 때 그룹의 권한은 무엇인가?</div>
-        <div class="short-answer">
-          <span class="code">-rw-r----- 1 root root 221 2월 7 17:23 /etc/hosts</span>
-        </div>
-        <div class="choices">
-          <div class="choice">① 읽기, 쓰기</div>
-          <div class="choice correct">② 읽기</div>
-          <div class="choice">③ 쓰기</div>
-          <div class="choice">④ 아무 권한 없음</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">07. text.txt 파일의 접근 권한을 소유자는 읽을 수만 있게 하고, 그룹과 기타 사용자에게는 아무 권한도 주지 않으려 한다. 숫자 모드로 바르게 수행한 것은?</div>
-        <div class="choices">
-          <div class="choice">① chmod 700 test.txt</div>
-          <div class="choice">② chmod 500 test.txt</div>
-          <div class="choice correct">③ chmod 400 test.txt</div>
-          <div class="choice">④ chmod 100 test.txt</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">10. 파일이나 디렉터리에 설정된 특수 접근 권한을 확인할 수 있는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① chmod</div>
-          <div class="choice">② touch</div>
-          <div class="choice">③ pwd</div>
-          <div class="choice correct">④ ls</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">11. 파일의 읽기 권한과 디렉터리의 읽기 권한은 어떤 차이가 있는지 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          파일 읽기: 파일을 읽거나 복사할 수 있다.<br>
-          디렉터리 읽기: ls 명령으로 디렉터리 목록을 볼 수 있다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">12. 디렉터리에 실행 권한이 없다는 것은 무엇을 의미하는지 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          cd 명령으로 해당 디렉터리로 이동할 수 없다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">15. 다음 접근 권한을 숫자로 표기하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          ① rwxr-xr-x = <span class="code">755</span><br>
-          ② rw-r--r-- = <span class="code">644</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">19. 스티키 비트에 대해 간단히 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          디렉터리에 스티키 비트가 설정되어 있으면 이 디렉터리에는 누구나 파일을 생성할 수 있으며, 다른 사용자가 생성한 파일을 삭제할 수 없다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">20. /bin 디렉터리에서 SetUID가 설정된 명령의 예를 세 개만 제시하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          gpasswd, mount, newgrp, passwd, su, umount
-        </div>
-      </div>
+print(add(3, 5))</code></pre>
+      <p>실행결과: <span class="red">8</span></p>
+      <table>
+        <tr><th>명령어</th><th>뜻</th></tr>
+        <tr><td><span class="tag">def</span></td><td>함수 정의</td></tr>
+        <tr><td><span class="tag">return</span></td><td>결과값 반환</td></tr>
+        <tr><td><span class="tag">print()</span></td><td>화면 출력</td></tr>
+        <tr><td><span class="tag">함수이름()</span></td><td>함수 호출</td></tr>
+      </table>
     </section>
 
-    <section id="ch7" class="chapter">
-      <h2>7장 파일 검색 / 정렬</h2>
+    <section id="ppt">
+      <h2>4. PPT 문제 정리</h2>
 
-      <div class="question-card">
-        <div class="question">01. find 명령으로 파일의 종류를 지정하여 검색할 때 사용하는 옵션은?</div>
-        <div class="choices">
-          <div class="choice">① -name</div>
-          <div class="choice">② -file</div>
-          <div class="choice correct">③ -type</div>
-          <div class="choice">④ -ls</div>
-        </div>
-      </div>
+      <h3>운영체제 / 스케줄링</h3>
+      <table>
+        <tr><th>설명</th><th>정답</th><th>외우는 말</th></tr>
+        <tr><td>FCFS를 선점 형태로 변형, Time Sharing System, Time Slice 사용</td><td><span class="red">라운드 로빈</span></td><td>시간 조각으로 번갈아 CPU 할당</td></tr>
+        <tr><td>실행시간이 가장 짧은 프로세스에게 먼저 CPU 할당, 비선점, 선점형은 SRT</td><td><span class="red">SJF</span></td><td>짧은 작업 먼저</td></tr>
+        <tr><td>HRN 우선순위 계산식</td><td><span class="red">(W + S) / S</span></td><td>W는 기다린 시간, S는 서비스 시간</td></tr>
+        <tr><td>전원을 켜면 OS 전에 자기진단과 주변기기 점검</td><td><span class="red">BIOS</span></td><td>컴퓨터 켜자마자 먼저 실행</td></tr>
+        <tr><td>CPU와 입출력 장치 속도 차이 보완 위해 잠시 저장</td><td><span class="red">버퍼링</span></td><td>속도 차이 줄이기</td></tr>
+        <tr><td>준비 상태 프로세스에 CPU 할당하여 실행 상태로 전환</td><td><span class="red">디스패치</span></td><td>준비 → 실행</td></tr>
+      </table>
 
-      <div class="question-card">
-        <div class="question">03. 다음 중 파일의 위치를 찾을 때 사용할 수 있는 명령이 아닌 것은?</div>
-        <div class="choices">
-          <div class="choice">① which</div>
-          <div class="choice correct">② file</div>
-          <div class="choice">③ whereis</div>
-          <div class="choice">④ find</div>
-        </div>
-      </div>
+      <h3>운영체제 처리 방식</h3>
+      <table>
+        <tr><th>설명</th><th>정답</th></tr>
+        <tr><td>한 개 CPU에서 여러 프로그램을 기억장치에 보관 후 번갈아 처리</td><td><span class="red">다중 프로그래밍 시스템</span></td></tr>
+        <tr><td>자료를 일정 기간 또는 일정량 모아서 한꺼번에 처리</td><td><span class="red">일괄 처리 시스템</span></td></tr>
+        <tr><td>CPU 시간을 작은 시간량으로 나누어 번갈아 처리</td><td><span class="red">시분할 시스템</span></td></tr>
+        <tr><td>여러 개 CPU와 한 개 주기억 장치로 여러 프로그램 동시 처리</td><td><span class="red">다중 처리 시스템</span></td></tr>
+      </table>
 
-      <div class="question-card">
-        <div class="question">04. /etc/services 파일에서 “ISO”를 검색하여 행번호와 함께 출력하는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① find -name ISO /etc/services</div>
-          <div class="choice">② find -type ISO /etc/services</div>
-          <div class="choice correct">③ grep -n ISO /etc/services</div>
-          <div class="choice">④ grep -t ISO /etc/services</div>
-        </div>
-      </div>
+      <h3>continue 실행결과</h3>
+      <pre><code>number = [1, -1, 0, 1, -1]
 
-      <div class="question-card">
-        <div class="question">06. sort 명령에서 대소문자를 구분하지 않고 검색하기 위해 지정하는 옵션은?</div>
-        <div class="choices">
-          <div class="choice correct">① -f</div>
-          <div class="choice">② -a</div>
-          <div class="choice">③ -A</div>
-          <div class="choice">④ -i</div>
-        </div>
-      </div>
+for n in number:
+    if n == -1:
+        continue
+    print(n, end=" ")</code></pre>
+      <p>실행결과</p>
+      <pre><code>1 0 1</code></pre>
+      <p><span class="tag">continue</span>는 이번 반복을 건너뛰고 다음 반복으로 넘어간다. 그래서 -1은 출력하지 않는다.</p>
 
-      <div class="question-card">
-        <div class="question">08. 다음 중 파일을 비교할 때 사용하는 명령이 아닌 것은?</div>
-        <div class="choices">
-          <div class="choice">① diff</div>
-          <div class="choice correct">② comp</div>
-          <div class="choice">③ diff3</div>
-          <div class="choice">④ cmp</div>
-        </div>
-      </div>
+      <h3>pop 실행결과</h3>
+      <pre><code>ls = [81, 91, 72, 100, 49]
 
-      <div class="question-card">
-        <div class="question">14. ex.txt 파일을 두 번째 필드의 역순으로 정렬하기 위한 명령은?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">sort -k2 -r ex.txt</span>
-        </div>
-      </div>
+print(ls.pop())
+print(ls.pop())
+print(ls.pop(1))</code></pre>
+      <p>실행결과</p>
+      <pre><code>49
+100
+91</code></pre>
+      <p><span class="tag">pop()</span>은 맨 뒤 값을 꺼내고 삭제한다. <span class="tag">pop(1)</span>은 인덱스 1번 값을 꺼내고 삭제한다.</p>
 
-      <div class="question-card">
-        <div class="question">15. uniq 명령의 특징을 기술하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          uniq 명령은 연속적인 행으로 중복된 내용만 중복으로 처리하여, 다른 행에 있는 내용은 중복 처리하지 않는다.
-        </div>
-      </div>
+      <h3>elif 빈칸</h3>
+      <pre><code>wallet = ['credit', 'id']
+farecard = True
 
-      <div class="question-card">
-        <div class="question">16. sort 명령의 특징</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          sort 명령은 텍스트 파일의 내용을 정렬하여 화면으로 출력한다.<br>
-          옵션 없이 사용하면 숫자 → 영어 대문자 → 영어 소문자 → 한글 순서로 정렬된다.
-        </div>
-      </div>
+if 'cash' in wallet:
+    print("택시")
+elif farecard == True:
+    print("버스")
+else:
+    print("도보")</code></pre>
+      <p>빈칸 정답: <span class="red">elif</span>, 실행결과: <span class="red">버스</span></p>
 
-      <div class="question-card">
-        <div class="question">19. u.txt 파일을 5행씩 분할하는 명령은 무엇인가? PREFIX로 ch07을 지정한다.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">split -l 5 u.txt ch6</span>
-        </div>
-      </div>
+      <h3>함수 실행결과</h3>
+      <pre><code>def af(a, b):
+    return a + b
+
+def bf(a, b):
+    return a - b
+
+print(bf(af(4, 5), 6))</code></pre>
+      <p>실행결과: <span class="red">3</span></p>
+      <p>af(4, 5)는 9이고, bf(9, 6)은 3이다.</p>
+
+      <h3>lambda 실행결과</h3>
+      <pre><code>def f(n):
+    return lambda a: a * n
+
+k = f(3)
+print(k(10))</code></pre>
+      <p>실행결과: <span class="red">30</span></p>
+      <p>k = f(3)은 3배 해주는 함수를 만든 것이다. k(10)은 10 × 3 = 30이다.</p>
+
+      <h3>type 실행결과</h3>
+      <pre><code>x = 10
+y = "test"
+
+print(type(x))
+print(type(y))</code></pre>
+      <p>PPT식 정답</p>
+      <pre><code>int
+str</code></pre>
+      <p>실제 파이썬 출력</p>
+      <pre><code>&lt;class 'int'&gt;
+&lt;class 'str'&gt;</code></pre>
     </section>
 
-    <section id="ch8" class="chapter">
-      <h2>8장 프로세스</h2>
+    <section id="subjective">
+      <h2>5. 정보시스템기반기술 주관식 3문제</h2>
+      <div class="box">주관식은 점수 비중이 높으니까 아래 <b>서술형 답안</b> 형태로 외우면 된다.</div>
 
-      <div class="question-card">
-        <div class="question">01. 현재 실행되고 있는 프로그램을 무엇이라고 하는가?</div>
-        <div class="choices">
-          <div class="choice">① 프로세서</div>
-          <div class="choice">② 실행 파일</div>
-          <div class="choice correct">③ 프로세스</div>
-          <div class="choice">④ 프로시저</div>
-        </div>
-      </div>
+      <h3>1번. 프로그램과 프로세스에 대해 설명하시오</h3>
+      <table>
+        <tr><th>구분</th><th>설명</th></tr>
+        <tr><td>프로그램</td><td>보조기억장치에 저장되어 있는 명령어들의 집합이다. 아직 실행되지 않은 정적인 상태이다.</td></tr>
+        <tr><td>프로세스</td><td>프로그램이 메모리에 적재되어 CPU에 의해 실행 중인 상태이다. 실행 중인 프로그램이라고 할 수 있다.</td></tr>
+      </table>
+      <h4>서술형 답안</h4>
+      <pre><code>프로그램은 보조기억장치에 저장되어 있는 명령어들의 집합으로 아직 실행되지 않은 정적인 상태이다.
+프로세스는 프로그램이 메모리에 적재되어 CPU에 의해 실행 중인 상태로, 실행 중인 프로그램을 의미한다.</code></pre>
+      <p><b>짧게 외우기:</b> <span class="red">프로그램 = 실행 전 파일</span>, <span class="red">프로세스 = 실행 중인 프로그램</span></p>
 
-      <div class="question-card">
-        <div class="question">03. 시스템에서 특정한 서비스를 제공하는 프로세스를 무엇이라고 하는가?</div>
-        <div class="choices">
-          <div class="choice">① 시스템 프로세스</div>
-          <div class="choice correct">② 데몬 프로세스</div>
-          <div class="choice">③ 특별 프로세스</div>
-          <div class="choice">④ 좀비 프로세스</div>
-        </div>
-      </div>
+      <h3>2번. 문맥교환에 대해 설명하시오</h3>
+      <p>문맥교환은 CPU가 현재 실행 중인 프로세스의 상태 정보를 저장하고, 다음에 실행할 프로세스의 상태 정보를 불러와 CPU를 넘겨주는 작업이다.</p>
+      <p>여러 프로세스를 번갈아 실행하기 위해 필요하지만, 너무 자주 발생하면 오버헤드가 증가하여 성능이 떨어질 수 있다.</p>
+      <h4>서술형 답안</h4>
+      <pre><code>문맥교환은 CPU가 현재 실행 중인 프로세스의 상태 정보를 저장하고,
+다음에 실행할 프로세스의 상태 정보를 불러와 CPU를 할당하는 작업이다.
+여러 프로세스를 번갈아 실행하기 위해 필요하지만, 자주 발생하면 오버헤드가 증가한다.</code></pre>
+      <p><b>짧게 외우기:</b> <span class="red">현재 프로세스 상태 저장 + 다음 프로세스 상태 복원</span></p>
 
-      <div class="question-card">
-        <div class="question">08. 포그라운드 작업을 잠시 중단할 때 사용하는 키는?</div>
-        <div class="choices">
-          <div class="choice">① Ctrl + A</div>
-          <div class="choice correct">② Ctrl + Z</div>
-          <div class="choice">③ Ctrl + C</div>
-          <div class="choice">④ Ctrl + \</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">09. 작업 번호가 3번인 작업을 종료하려고 한다. kill 명령 다음에 지정해야 하는 것은?</div>
-        <div class="choices">
-          <div class="choice">① 3</div>
-          <div class="choice">② -3</div>
-          <div class="choice correct">③ %3</div>
-          <div class="choice">④ +3</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">11. 일반 프로세스와 데몬 프로세스의 차이를 설명하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          일반 프로세스: 사용자가 커널에 의해 실행되었다가 실행이 끝나면 종료하는 프로세스<br>
-          데몬 프로세스: 리눅스 커널에 의해서 실행되고, 특정한 서비스를 제공하기 위해 존재하는 프로세스로 대부분 대기 상태로 있다가 서비스 요청이 오면 실행한다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">13. 터미널 A에서 cron 프로세스를 사용자 ID와 터미널 번호가 보이도록 검색하는 명령은?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">ps -ef | grep cron</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">19. 로그아웃한 다음에도 find / -name sort.txt 명령이 계속 실행하도록 하는 명령을 기술하시오.</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">nohup find / -name sort.txt &amp;</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">20. PID가 5000인 프로세스를 kill 5000으로 종료하려는데 종료되지 않는다. 강제로 종료하려면?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">kill -9 5000</span>
-        </div>
-      </div>
+      <h3>3번. 스레드와 프로세스에 대해 설명하시오</h3>
+      <table>
+        <tr><th>구분</th><th>설명</th></tr>
+        <tr><td>프로세스</td><td>실행 중인 프로그램이며, 독립적인 메모리 공간과 자원을 가진다.</td></tr>
+        <tr><td>스레드</td><td>프로세스 안에서 실행되는 작업의 작은 단위이다. 같은 프로세스 안의 스레드들은 코드, 데이터, 자원을 공유할 수 있다.</td></tr>
+      </table>
+      <h4>서술형 답안</h4>
+      <pre><code>프로세스는 실행 중인 프로그램으로 독립적인 메모리 공간과 자원을 가진다.
+스레드는 프로세스 안에서 실행되는 작업의 작은 단위이며,
+같은 프로세스 안의 스레드들은 코드와 데이터 등 자원을 공유할 수 있다.</code></pre>
+      <p><b>짧게 외우기:</b> <span class="red">프로세스 = 실행 중인 프로그램</span>, <span class="red">스레드 = 프로세스 안의 실행 단위</span></p>
     </section>
 
-    <section id="ch9" class="chapter">
-      <h2>9장 사용자 계정</h2>
+    <section id="final">
+      <h2>6. 최종 암기표</h2>
+      <h3>파이썬</h3>
+      <table>
+        <tr><th>키워드</th><th>답</th></tr>
+        <tr><td>조건이 True인 동안 반복</td><td><span class="red">while, 반복 구조</span></td></tr>
+        <tr><td>ride_number 문제</td><td><span class="red">1보다 작거나 5보다 클 때 실행</span></td></tr>
+        <tr><td>리스트</td><td><span class="red">[ ], 인덱스 0부터, append()</span></td></tr>
+        <tr><td>for문</td><td><span class="red">for 변수 in range():</span></td></tr>
+        <tr><td>함수 정의</td><td><span class="red">def</span></td></tr>
+      </table>
 
-      <div class="question-card">
-        <div class="question">01. 사용자 계정과 관련된 파일이 아닌 것은?</div>
-        <div class="choices">
-          <div class="choice">① /etc/passwd</div>
-          <div class="choice">② /etc/shadow</div>
-          <div class="choice">③ /etc/group</div>
-          <div class="choice correct">④ /etc/users</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">02. /etc/passwd 파일의 구성 요소가 아닌 것은?</div>
-        <div class="choices">
-          <div class="choice">① UID</div>
-          <div class="choice">② GID</div>
-          <div class="choice correct">③ 최종 변경일</div>
-          <div class="choice">④ 로그인 셸</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">07. 사용자 계정이 속한 2차 그룹을 확인할 수 있는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① users</div>
-          <div class="choice">② who -a</div>
-          <div class="choice">③ last</div>
-          <div class="choice correct">④ groups</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">08. user1 계정에서 root 계정의 권한으로 명령을 실행하려고 한다. 이에 맞지 않는 것은?</div>
-        <div class="choices">
-          <div class="choice">① su</div>
-          <div class="choice">② sudo</div>
-          <div class="choice">③ su -</div>
-          <div class="choice correct">④ sudo -</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">09. EUID를 확인하는 명령으로 옳은 것은?</div>
-        <div class="choices">
-          <div class="choice correct">① whoami</div>
-          <div class="choice">② who am i</div>
-          <div class="choice">③ who -m</div>
-          <div class="choice">④ who -r</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">10. user1(1000) 계정에서 user3(1002) 계정으로 전환하였다. UID와 EUID는?</div>
-        <div class="choices">
-          <div class="choice">① UID: 1000, EUID: 1000</div>
-          <div class="choice correct">② UID: 1000, EUID: 1002</div>
-          <div class="choice">③ UID: 1002, EUID: 1000</div>
-          <div class="choice">④ UID: 1002, EUID: 1002</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">12. 패스워드 에이징 정보는 무엇이며, 어떤 파일에 저장되는가?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          암호의 유효 기간에 대한 정보이며 <span class="code">/etc/shadow</span> 파일에 저장된다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">13. 패스워드 에이징 중 MAX 값은 무엇을 의미하는가?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          암호를 사용할 수 있는 최대 기간이다.
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">14. 사용자 계정이 속한 2차 그룹의 정보는 어느 파일에서 관리하는가?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">/etc/group</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">17. 특정 사용자 계정이 로그인했다가 로그아웃한 시간을 확인할 수 있는 명령은?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">last</span>
-        </div>
-      </div>
+      <h3>정보시스템기반기술 / PPT</h3>
+      <table>
+        <tr><th>키워드</th><th>답</th></tr>
+        <tr><td>FCFS 선점 변형, Time Slice</td><td><span class="red">라운드 로빈</span></td></tr>
+        <tr><td>실행시간 짧은 작업 먼저</td><td><span class="red">SJF</span></td></tr>
+        <tr><td>전원 켜면 OS 전 실행</td><td><span class="red">BIOS</span></td></tr>
+        <tr><td>속도 차이 보완 위해 잠깐 저장</td><td><span class="red">버퍼링</span></td></tr>
+        <tr><td>준비 상태 → 실행 상태</td><td><span class="red">디스패치</span></td></tr>
+        <tr><td>HRN 계산식</td><td><span class="red">(W + S) / S</span></td></tr>
+        <tr><td>프로그램과 프로세스</td><td><span class="red">프로그램은 실행 전, 프로세스는 실행 중</span></td></tr>
+        <tr><td>문맥교환</td><td><span class="red">상태 저장 + 상태 복원</span></td></tr>
+        <tr><td>스레드와 프로세스</td><td><span class="red">스레드는 프로세스 안의 실행 단위</span></td></tr>
+      </table>
     </section>
+  </div>
 
-    <section id="ch10" class="chapter">
-      <h2>10장 디스크 / 압축</h2>
-
-      <div class="question-card">
-        <div class="question">02. 다음 중 파티션을 나누는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① mkfs</div>
-          <div class="choice correct">② fdisk</div>
-          <div class="choice">③ partition</div>
-          <div class="choice">④ mkpart</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">04. /etc 디렉터리가 사용하고 있는 디스크의 사용량을 전체 사용량만 출력하는 명령은?</div>
-        <div class="choices">
-          <div class="choice correct">① du -s /etc</div>
-          <div class="choice">② du -h /etc</div>
-          <div class="choice">③ df -s /etc</div>
-          <div class="choice">④ df -h /etc</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">05. tar 명령으로 study 디렉터리를 study.tar 파일로 아카이빙하는 명령으로 옳은 것은?</div>
-        <div class="choices">
-          <div class="choice">① tar cvf study study.tar</div>
-          <div class="choice">② tar tvf study.tar study</div>
-          <div class="choice correct">③ tar cvf study.tar study</div>
-          <div class="choice">④ tar tvf study study.tar</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">07. 압축 명령 중에 디렉터리를 압축할 수 있는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① compress</div>
-          <div class="choice correct">② zip</div>
-          <div class="choice">③ gzip</div>
-          <div class="choice">④ bzip2</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">08. 다음 압축 명령 중에 압축 후에 원본 파일이 그대로 유지되는 명령은?</div>
-        <div class="choices">
-          <div class="choice">① gzip</div>
-          <div class="choice">② compress</div>
-          <div class="choice">③ bzip2</div>
-          <div class="choice correct">④ zip</div>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">13. df 명령으로 파일 시스템의 사용량을 확인할 때 파일 시스템의 종류와 사용량을 알기 쉬운 단위로 출력하려면 어떤 옵션을 사용해야 하는가?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">df -Th</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">14. 사용자 계정 hanbit의 디스크 사용량을 확인하기 위한 명령은?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span><br>
-          <span class="code">du ~hanbit</span><br>
-          또는<br>
-          <span class="code">du -s ~hanbit</span>
-        </div>
-      </div>
-
-      <div class="question-card">
-        <div class="question">20. ex.txt 파일의 내용을 모두 대문자로 바꾸어 ex20.txt로 저장하는 명령은?</div>
-        <div class="short-answer">
-          <span class="answer-title">정답</span>
-          <span class="code">dd if=ex.txt of=ex20.txt conv=ucase</span>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <button class="top-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-    위로
-  </button>
+  <a class="top" href="#top">위로</a>
 </body>
 </html>
