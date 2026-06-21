@@ -916,10 +916,7 @@ export default function App() {
             <a href={`${import.meta.env.BASE_URL}lotto-table/index.html`}>
               표로 가기
             </a>
-
-            <a href={`${import.meta.env.BASE_URL}exam.html`}>
-              임시페이지로 이동
-            </a>
+            
           </div>
         </div>
 

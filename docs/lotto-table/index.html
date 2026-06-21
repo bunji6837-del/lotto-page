@@ -19,6 +19,8 @@
       --bonus-match: #38bdf8;
       --danger: #dc2626;
       --green: #16a34a;
+      --orange: #ea580c;
+      --blue: #2563eb;
     }
 
     * {
@@ -122,6 +124,11 @@
       font-weight: 800;
     }
 
+    .badge-orange {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
     .search-box {
       display: flex;
       gap: 10px;
@@ -157,6 +164,10 @@
       box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
     }
 
+    .cycle-input {
+      width: 140px !important;
+    }
+
     button {
       align-self: end;
       height: 46px;
@@ -188,6 +199,14 @@
 
     .fixed-search-btn:hover {
       background: #047857;
+    }
+
+    .cycle-search-btn {
+      background: var(--orange);
+    }
+
+    .cycle-search-btn:hover {
+      background: #c2410c;
     }
 
     .status {
@@ -239,6 +258,143 @@
       font-weight: 800;
     }
 
+    .analysis {
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .analysis-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .analysis-desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .analysis-card {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .analysis-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #dbe3ef;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag strong {
+      color: var(--blue);
+    }
+
+    .info-tag {
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .info-tag .tooltip-box {
+      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      z-index: 50;
+      min-width: 210px;
+      max-width: 280px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #111827;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 1.45;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      white-space: normal;
+    }
+
+    .info-tag .tooltip-box::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      border-width: 7px;
+      border-style: solid;
+      border-color: #111827 transparent transparent transparent;
+    }
+
+    .info-tag:hover .tooltip-box,
+    .info-tag.is-open .tooltip-box {
+      display: block;
+    }
+
+    .tooltip-title {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 900;
+      color: #fde68a;
+    }
+
+    .tooltip-numbers {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .position-list {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .position-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+
+    .position-item strong {
+      flex: 0 0 auto;
+    }
+
     .block {
       background: var(--card);
       border: 1px solid #e5e7eb;
@@ -279,6 +435,16 @@
     .hit-row {
       background: var(--hit);
       font-weight: 800;
+    }
+
+    .cycle-base-row {
+      background: #ffedd5;
+      font-weight: 900;
+    }
+
+    .cycle-missing-row {
+      background: #f3f4f6;
+      color: #9ca3af;
     }
 
     .num {
@@ -348,8 +514,13 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      input[type="number"] {
-        width: 100%;
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+
+      input[type="number"],
+      .cycle-input {
+        width: 100% !important;
         font-size: 16px;
       }
 
@@ -360,6 +531,20 @@
       button {
         width: 100%;
         font-size: 16px;
+      }
+
+      .info-tag .tooltip-box {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        width: calc(100vw - 40px);
+        max-width: 360px;
+        text-align: center;
+      }
+
+      .info-tag .tooltip-box::after {
+        display: none;
       }
     }
   </style>
@@ -374,7 +559,7 @@
       <p class="desc">
         숫자 <strong>2개부터 4개까지</strong> 입력해서 같이 나온 회차를 찾거나,
         <strong>1구~6구 / 보볼</strong> 자리를 고정해서 특정 자리 조건에 맞는 회차를 찾을 수 있습니다.
-        각 회차마다 <strong>2주 전 → 지난주 → 해당 회차 → 다음 회차</strong> 4주 흐름을 표로 보여줍니다.
+        추가로 <strong>100회귀별 보기</strong>를 통해 같은 끝 두 자리 회차 흐름과 자동 분석을 확인할 수 있습니다.
       </p>
     </section>
 
@@ -466,6 +651,29 @@
       </div>
     </section>
 
+    <section class="search-panel">
+      <div class="search-title">
+        <div>
+          <h2>100회귀별 보기</h2>
+          <p>
+            기준 회차와 끝 두 자리가 같은 회차를 1회차부터 기준 회차까지 전부 보여줍니다.
+            예: 1230을 입력하면 30, 130, 230, 330 ... 1230회차를 표시합니다.
+          </p>
+        </div>
+        <span class="badge badge-orange">100회귀 분석</span>
+      </div>
+
+      <div class="search-box">
+        <div class="field">
+          <label for="cycleRound">기준 회차</label>
+          <input id="cycleRound" class="cycle-input" type="number" min="1" placeholder="예: 1230" />
+        </div>
+
+        <button type="button" class="cycle-search-btn" onclick="searchHundredCycle()">100회귀 보기</button>
+        <button type="button" class="reset-btn" onclick="resetSearch()">초기화</button>
+      </div>
+    </section>
+
     <div id="status" class="status">데이터 불러오는 중...</div>
 
     <div id="help" class="help">
@@ -476,6 +684,7 @@
     </div>
 
     <div id="summary"></div>
+    <div id="analysis"></div>
     <div id="result"></div>
   </main>
 
@@ -485,11 +694,49 @@
     const POSITION_INPUT_IDS = ["pos1", "pos2", "pos3", "pos4", "pos5", "pos6"];
     const POSITION_LABELS = ["1구", "2구", "3구", "4구", "5구", "6구"];
 
+    const GUNG_GROUPS = {
+      "1궁": [1, 10, 19, 28, 37],
+      "2궁": [2, 11, 20, 29, 38],
+      "3궁": [3, 12, 21, 30, 39],
+      "4궁": [4, 13, 22, 31, 40],
+      "5궁": [5, 14, 23, 32, 41],
+      "6궁": [6, 15, 24, 33, 42],
+      "7궁": [7, 16, 25, 34, 43],
+      "8궁": [8, 17, 26, 35, 44],
+      "9궁": [9, 18, 27, 36, 45],
+    };
+
+    const VERTICAL_GROUPS = {
+      "1세로": [1, 8, 15, 22, 29, 36, 43],
+      "2세로": [2, 9, 16, 23, 30, 37, 44],
+      "3세로": [3, 10, 17, 24, 31, 38, 45],
+      "4세로": [4, 11, 18, 25, 32, 39],
+      "5세로": [5, 12, 19, 26, 33, 40],
+      "6세로": [6, 13, 20, 27, 34, 41],
+      "7세로": [7, 14, 21, 28, 35, 42],
+    };
+
     let LOTTO_DRAWS = [];
     let LOTTO_MAP = new Map();
     let META = null;
 
     document.addEventListener("DOMContentLoaded", init);
+
+    document.addEventListener("click", function (event) {
+      const clickedTag = event.target.closest(".info-tag");
+
+      document.querySelectorAll(".info-tag.is-open").forEach((tag) => {
+        if (tag !== clickedTag) {
+          tag.classList.remove("is-open");
+        }
+      });
+
+      if (!clickedTag) {
+        return;
+      }
+
+      clickedTag.classList.toggle("is-open");
+    });
 
     async function init() {
       try {
@@ -507,10 +754,13 @@
           LOTTO_DRAWS.map((item) => [Number(item.round), item])
         );
 
-        const latestRound = META.latestRound || LOTTO_DRAWS.length;
+        const latestRound = getLatestRound();
+        const defaultCycleRound = latestRound + 1;
+
+        document.getElementById("cycleRound").value = defaultCycleRound;
 
         setStatus(
-          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색 또는 자리 고정 검색을 선택하세요.`,
+          `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색, 자리 고정 검색, 100회귀별 보기를 선택하세요.`,
           false
         );
 
@@ -520,6 +770,14 @@
         setStatus("lotto-data.json 파일을 불러오지 못했습니다.", true);
         document.getElementById("help").style.display = "block";
       }
+    }
+
+    function getLatestRound() {
+      if (META?.latestRound) return Number(META.latestRound);
+
+      if (!LOTTO_DRAWS.length) return 0;
+
+      return Math.max(...LOTTO_DRAWS.map((item) => Number(item.round)));
     }
 
     function restoreLastSearch() {
@@ -532,6 +790,12 @@
 
       try {
         const parsed = JSON.parse(saved);
+
+        if (parsed.mode === "cycle" && parsed.baseRound) {
+          document.getElementById("cycleRound").value = parsed.baseRound;
+          searchHundredCycle(false);
+          return;
+        }
 
         if (parsed.mode === "fixed" && parsed.filters) {
           fillFixedInputs(parsed.filters);
@@ -569,19 +833,21 @@
       });
 
       document.getElementById("bonus").value = "";
+      document.getElementById("cycleRound").value = getLatestRound() + 1;
 
       clearResult();
 
-      const latestRound = META?.latestRound || LOTTO_DRAWS.length;
+      const latestRound = getLatestRound();
 
       setStatus(
-        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색 또는 자리 고정 검색을 선택하세요.`,
+        `데이터 로드 완료: 1회 ~ ${latestRound}회. 숫자 검색, 자리 고정 검색, 100회귀별 보기를 선택하세요.`,
         false
       );
     }
 
     function clearResult() {
       document.getElementById("summary").innerHTML = "";
+      document.getElementById("analysis").innerHTML = "";
       document.getElementById("result").innerHTML = "";
     }
 
@@ -644,14 +910,30 @@
       );
     }
 
+    function clearComboInputs() {
+      COMBO_INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+    }
+
+    function clearFixedInputs() {
+      POSITION_INPUT_IDS.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+
+      document.getElementById("bonus").value = "";
+    }
+
     function searchCombo(shouldSave = true) {
       clearFixedInputs();
 
       const inputNumbers = getComboNumbers();
       const summary = document.getElementById("summary");
+      const analysis = document.getElementById("analysis");
       const result = document.getElementById("result");
 
       summary.innerHTML = "";
+      analysis.innerHTML = "";
       result.innerHTML = "";
 
       if (!LOTTO_DRAWS.length) {
@@ -700,7 +982,6 @@
       );
 
       renderSummary({
-        mode: "combo",
         title: "숫자 동시 출현",
         conditionLabel: searchNumbers.join(", "),
         hits,
@@ -732,20 +1013,6 @@
         positions,
         bonus,
       };
-    }
-
-    function clearComboInputs() {
-      COMBO_INPUT_IDS.forEach((id) => {
-        document.getElementById(id).value = "";
-      });
-    }
-
-    function clearFixedInputs() {
-      POSITION_INPUT_IDS.forEach((id) => {
-        document.getElementById(id).value = "";
-      });
-
-      document.getElementById("bonus").value = "";
     }
 
     function fillFixedInputs(filters) {
@@ -827,9 +1094,11 @@
 
       const filters = getFixedFilters();
       const summary = document.getElementById("summary");
+      const analysis = document.getElementById("analysis");
       const result = document.getElementById("result");
 
       summary.innerHTML = "";
+      analysis.innerHTML = "";
       result.innerHTML = "";
 
       if (!LOTTO_DRAWS.length) {
@@ -870,7 +1139,6 @@
       setStatus(`${conditionLabel} 조건에 맞는 회차: ${hits.length}개`, false);
 
       renderSummary({
-        mode: "fixed",
         title: "자리 고정 검색",
         conditionLabel,
         hits,
@@ -895,6 +1163,88 @@
       );
     }
 
+    function getHundredCycleRounds(baseRound) {
+      const start = baseRound % 100 === 0 ? 100 : baseRound % 100;
+      const rounds = [];
+
+      for (let round = start; round <= baseRound; round += 100) {
+        if (round >= 1) {
+          rounds.push(round);
+        }
+      }
+
+      return rounds;
+    }
+
+    function saveCycleSearch(baseRound) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          mode: "cycle",
+          baseRound,
+        })
+      );
+    }
+
+    function searchHundredCycle(shouldSave = true) {
+      clearComboInputs();
+      clearFixedInputs();
+
+      const baseRound = getNumberFromInput("cycleRound");
+      const summary = document.getElementById("summary");
+      const analysis = document.getElementById("analysis");
+      const result = document.getElementById("result");
+
+      summary.innerHTML = "";
+      analysis.innerHTML = "";
+      result.innerHTML = "";
+
+      if (!LOTTO_DRAWS.length) {
+        setStatus("데이터가 아직 없습니다.", true);
+        return;
+      }
+
+      if (!Number.isInteger(baseRound) || baseRound < 1) {
+        setStatus("기준 회차는 1 이상의 숫자로 입력해야 합니다.", true);
+        return;
+      }
+
+      if (shouldSave) {
+        saveCycleSearch(baseRound);
+      }
+
+      const cycleRounds = getHundredCycleRounds(baseRound);
+      const cycleItems = cycleRounds.map((round) => ({
+        round,
+        draw: LOTTO_MAP.get(round) || null,
+      }));
+
+      const dataItems = cycleItems.filter((item) => item.draw).map((item) => item.draw);
+      const latestRound = getLatestRound();
+
+      setStatus(
+        `${baseRound}회 기준 100회귀: ${cycleRounds.length}개 표시 / 데이터 있는 회차 ${dataItems.length}개`,
+        false
+      );
+
+      renderCycleSummary({
+        baseRound,
+        latestRound,
+        cycleRounds,
+        dataItems,
+      });
+
+      renderCycleAnalysis({
+        baseRound,
+        dataItems,
+      });
+
+      renderCycleTable({
+        baseRound,
+        cycleItems,
+      });
+    }
+
     document.addEventListener("keydown", function (event) {
       if (event.key === "Enter") {
         const activeId = document.activeElement?.id;
@@ -906,13 +1256,15 @@
         if (POSITION_INPUT_IDS.includes(activeId) || activeId === "bonus") {
           searchFixed();
         }
+
+        if (activeId === "cycleRound") {
+          searchHundredCycle();
+        }
       }
     });
 
-    function renderSummary({ mode, title, conditionLabel, hits }) {
-      const latest =
-        META?.latestRound || Math.max(...LOTTO_DRAWS.map((x) => x.round));
-
+    function renderSummary({ title, conditionLabel, hits }) {
+      const latest = getLatestRound();
       const lastHit = hits.length ? hits[hits.length - 1] : null;
       const firstHit = hits.length ? hits[0] : null;
 
@@ -951,6 +1303,326 @@
             : ""
         }
       `;
+    }
+
+    function renderCycleSummary({ baseRound, latestRound, cycleRounds, dataItems }) {
+      const firstRound = cycleRounds[0] || "-";
+      const lastRound = cycleRounds[cycleRounds.length - 1] || "-";
+
+      document.getElementById("summary").innerHTML = `
+        <section class="summary">
+          <div class="summary-card">
+            <div class="label">검색 방식</div>
+            <div class="value">100회귀</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">기준 회차</div>
+            <div class="value">${baseRound}회</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">회귀 범위</div>
+            <div class="value">${firstRound} ~ ${lastRound}</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">최신 데이터</div>
+            <div class="value">${latestRound}회</div>
+          </div>
+        </section>
+
+        <div class="small">
+          전체 표시: ${cycleRounds.length}개 / 데이터 있는 회차: ${dataItems.length}개 /
+          데이터 없는 회차는 표에서 “자료 없음”으로 표시됩니다.
+        </div>
+      `;
+    }
+
+    function renderCycleAnalysis({ baseRound, dataItems }) {
+      const analysisBox = document.getElementById("analysis");
+
+      if (!dataItems.length) {
+        analysisBox.innerHTML = `
+          <section class="analysis">
+            <div class="analysis-title">100회귀 자동 분석</div>
+            <p class="analysis-desc">분석할 수 있는 회차 데이터가 없습니다.</p>
+          </section>
+        `;
+        return;
+      }
+
+      const numberFreq = new Map();
+      const endingFreq = new Map();
+      const gungFreq = new Map();
+      const verticalFreq = new Map();
+      const bonusFreq = new Map();
+      const positionFreq = Array.from({ length: 6 }, () => new Map());
+      const consecutiveRows = [];
+
+      dataItems.forEach((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        numbers.forEach((num, index) => {
+          addCount(numberFreq, num);
+          addCount(endingFreq, num % 10);
+          addCount(gungFreq, getGroupName(num, GUNG_GROUPS));
+          addCount(verticalFreq, getGroupName(num, VERTICAL_GROUPS));
+
+          if (positionFreq[index]) {
+            addCount(positionFreq[index], num);
+          }
+        });
+
+        if (draw.bonus) {
+          addCount(bonusFreq, draw.bonus);
+        }
+
+        const consecutivePairs = getConsecutivePairs(numbers);
+
+        if (consecutivePairs.length) {
+          consecutiveRows.push({
+            round: draw.round,
+            pairs: consecutivePairs,
+          });
+        }
+      });
+
+      const topNumbers = sortMapEntries(numberFreq).slice(0, 10);
+      const topEndings = sortMapEntries(endingFreq).slice(0, 10);
+      const topGungs = sortMapEntries(gungFreq).slice(0, 9);
+      const topVerticals = sortMapEntries(verticalFreq).slice(0, 7);
+      const topBonus = sortMapEntries(bonusFreq).slice(0, 8);
+
+      analysisBox.innerHTML = `
+        <section class="analysis">
+          <div class="analysis-title">${baseRound}회 기준 100회귀 자동 분석</div>
+          <p class="analysis-desc">
+            아래 분석은 100회귀 안에서 데이터가 있는 회차만 계산한 통계입니다.
+            궁수와 세로는 PC에서는 마우스를 올리면 보이고, 휴대폰에서는 터치하면 보입니다.
+          </p>
+
+          <div class="analysis-grid">
+            <div class="analysis-card">
+              <h3>자주 나온 번호</h3>
+              <div class="tag-list">
+                ${makeTagList(topNumbers, (num, count) => `${num}번 <strong>${count}회</strong>`)}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>자주 나온 끝수</h3>
+              <div class="tag-list">
+                ${makeTagList(topEndings, (ending, count) => `${ending}끝 <strong>${count}회</strong>`)}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>자주 나온 궁수</h3>
+              <div class="tag-list">
+                ${makeGroupTagList(topGungs, GUNG_GROUPS)}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>자주 나온 세로</h3>
+              <div class="tag-list">
+                ${makeGroupTagList(topVerticals, VERTICAL_GROUPS)}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>자주 나온 보너스</h3>
+              <div class="tag-list">
+                ${makeTagList(topBonus, (num, count) => `${num}번 <strong>${count}회</strong>`)}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>자리별 자주 나온 숫자</h3>
+              <div class="position-list">
+                ${positionFreq
+                  .map((map, index) => {
+                    const top = sortMapEntries(map).slice(0, 3);
+
+                    return `
+                      <div class="position-item">
+                        <strong>${POSITION_LABELS[index]}</strong>
+                        <span>${top.length ? top.map(([num, count]) => `${num}번 ${count}회`).join(" / ") : "-"}</span>
+                      </div>
+                    `;
+                  })
+                  .join("")}
+              </div>
+            </div>
+
+            <div class="analysis-card">
+              <h3>연번 나온 회차</h3>
+              <div class="position-list">
+                ${
+                  consecutiveRows.length
+                    ? consecutiveRows
+                        .slice(-8)
+                        .reverse()
+                        .map((item) => `
+                          <div class="position-item">
+                            <strong>${item.round}회</strong>
+                            <span>${item.pairs.join(" / ")}</span>
+                          </div>
+                        `)
+                        .join("")
+                    : `<div class="position-item"><strong>없음</strong><span>연속 번호가 나온 회차가 없습니다.</span></div>`
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderCycleTable({ baseRound, cycleItems }) {
+      const block = document.createElement("section");
+
+      block.className = "block";
+      block.innerHTML = `
+        <div class="block-title">${baseRound}회 기준 100회귀 전체 흐름</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>추첨일</th>
+              <th>1구</th>
+              <th>2구</th>
+              <th>3구</th>
+              <th>4구</th>
+              <th>5구</th>
+              <th>6구</th>
+              <th>보볼</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${cycleItems.map((item) => makeCycleRow(item, baseRound)).join("")}
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById("result").appendChild(block);
+    }
+
+    function makeCycleRow(item, baseRound) {
+      const row = item.draw;
+
+      if (!row) {
+        return `
+          <tr class="${Number(item.round) === Number(baseRound) ? "cycle-base-row" : "cycle-missing-row"}">
+            <td>${item.round}</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="empty">-</td>
+            <td class="bonus-cell empty">-</td>
+            <td class="empty">자료 없음</td>
+          </tr>
+        `;
+      }
+
+      const numbersHtml = row.numbers
+        .map((num) => `
+          <td>
+            <span class="num">${num}</span>
+          </td>
+        `)
+        .join("");
+
+      return `
+        <tr class="${Number(row.round) === Number(baseRound) ? "cycle-base-row" : ""}">
+          <td>${row.round}</td>
+          <td>${row.date}</td>
+          ${numbersHtml}
+          <td class="bonus-cell">${row.bonus}</td>
+          <td>${Number(row.round) === Number(baseRound) ? "기준 회차" : "100회귀"}</td>
+        </tr>
+      `;
+    }
+
+    function addCount(map, key) {
+      map.set(key, (map.get(key) || 0) + 1);
+    }
+
+    function sortMapEntries(map) {
+      return [...map.entries()].sort((a, b) => {
+        if (b[1] !== a[1]) return b[1] - a[1];
+
+        const aNumber = Number(a[0]);
+        const bNumber = Number(b[0]);
+
+        if (!Number.isNaN(aNumber) && !Number.isNaN(bNumber)) {
+          return aNumber - bNumber;
+        }
+
+        return String(a[0]).localeCompare(String(b[0]), "ko-KR");
+      });
+    }
+
+    function makeTagList(entries, formatter) {
+      if (!entries.length) {
+        return `<span class="tag">데이터 없음</span>`;
+      }
+
+      return entries
+        .map(([key, count]) => `<span class="tag">${formatter(key, count)}</span>`)
+        .join("");
+    }
+
+    function getGroupName(num, groups) {
+      for (const [groupName, numbers] of Object.entries(groups)) {
+        if (numbers.includes(Number(num))) {
+          return groupName;
+        }
+      }
+
+      return "미분류";
+    }
+
+    function makeGroupTagList(entries, groups) {
+      if (!entries.length) {
+        return `<span class="tag">데이터 없음</span>`;
+      }
+
+      return entries
+        .map(([groupName, count]) => {
+          const numbers = groups[groupName] || [];
+
+          return `
+            <span class="tag info-tag">
+              ${groupName} <strong>${count}회</strong>
+              <span class="tooltip-box">
+                <span class="tooltip-title">${groupName}</span>
+                <span class="tooltip-numbers">${groupName} - ${numbers.join(" ")}</span>
+              </span>
+            </span>
+          `;
+        })
+        .join("");
+    }
+
+    function getConsecutivePairs(numbers) {
+      const sorted = [...numbers].sort((a, b) => a - b);
+      const pairs = [];
+
+      for (let i = 0; i < sorted.length - 1; i += 1) {
+        if (sorted[i + 1] - sorted[i] === 1) {
+          pairs.push(`${sorted[i]}-${sorted[i + 1]}`);
+        }
+      }
+
+      return pairs;
     }
 
     function renderBlock(hit, context) {
