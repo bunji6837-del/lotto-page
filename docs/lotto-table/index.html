@@ -18,7 +18,6 @@
       --bonus: #d7dbe2;
       --bonus-match: #38bdf8;
       --danger: #dc2626;
-      --green: #16a34a;
       --orange: #ea580c;
       --blue: #2563eb;
     }
@@ -395,6 +394,137 @@
       flex: 0 0 auto;
     }
 
+    .conditional-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .conditional-card {
+      display: block;
+      padding: 12px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .conditional-card:hover {
+      transform: translateY(-1px);
+      border-color: #2563eb;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+    }
+
+    .conditional-card.is-active {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .conditional-card-title {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .conditional-detail {
+      display: grid;
+      gap: 4px;
+      color: #374151;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .conditional-detail span b {
+      color: #111827;
+    }
+
+    .pattern-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pattern-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .pattern-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pattern-btn {
+      height: auto;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #dbe3ef;
+      background: #ffffff;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pattern-btn:hover {
+      background: #eef2ff;
+    }
+
+    .pattern-btn.is-active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .pattern-btn.off-btn {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .pattern-btn.off-btn.is-active {
+      background: #111827;
+      color: #ffffff;
+      border-color: #111827;
+    }
+
+    .pattern-number {
+      background: #fde68a;
+      color: #111827;
+      font-weight: 900;
+      border: 2px solid #f59e0b;
+    }
+
+    .pattern-ending {
+      background: #dbeafe;
+      color: #1e3a8a;
+      font-weight: 900;
+      border: 2px solid #2563eb;
+    }
+
+    .pattern-gung {
+      background: #f3e8ff;
+      color: #581c87;
+      font-weight: 900;
+      border: 2px solid #9333ea;
+    }
+
+    .pattern-vertical {
+      background: #ffedd5;
+      color: #7c2d12;
+      font-weight: 900;
+      border: 2px dashed #ea580c;
+    }
+
     .block {
       background: var(--card);
       border: 1px solid #e5e7eb;
@@ -531,6 +661,10 @@
       button {
         width: 100%;
         font-size: 16px;
+      }
+
+      .pattern-btn {
+        width: auto;
       }
 
       .info-tag .tooltip-box {
@@ -720,6 +854,9 @@
     let LOTTO_MAP = new Map();
     let META = null;
 
+    let CURRENT_CYCLE_STATE = null;
+    let ACTIVE_PATTERN = null;
+
     document.addEventListener("DOMContentLoaded", init);
 
     document.addEventListener("click", function (event) {
@@ -835,6 +972,9 @@
       document.getElementById("bonus").value = "";
       document.getElementById("cycleRound").value = getLatestRound() + 1;
 
+      CURRENT_CYCLE_STATE = null;
+      ACTIVE_PATTERN = null;
+
       clearResult();
 
       const latestRound = getLatestRound();
@@ -926,6 +1066,9 @@
 
     function searchCombo(shouldSave = true) {
       clearFixedInputs();
+
+      CURRENT_CYCLE_STATE = null;
+      ACTIVE_PATTERN = null;
 
       const inputNumbers = getComboNumbers();
       const summary = document.getElementById("summary");
@@ -1092,6 +1235,9 @@
     function searchFixed(shouldSave = true) {
       clearComboInputs();
 
+      CURRENT_CYCLE_STATE = null;
+      ACTIVE_PATTERN = null;
+
       const filters = getFixedFilters();
       const summary = document.getElementById("summary");
       const analysis = document.getElementById("analysis");
@@ -1221,6 +1367,14 @@
 
       const dataItems = cycleItems.filter((item) => item.draw).map((item) => item.draw);
       const latestRound = getLatestRound();
+
+      ACTIVE_PATTERN = null;
+
+      CURRENT_CYCLE_STATE = {
+        baseRound,
+        cycleItems,
+        dataItems,
+      };
 
       setStatus(
         `${baseRound}회 기준 100회귀: ${cycleRounds.length}개 표시 / 데이터 있는 회차 ${dataItems.length}개`,
@@ -1457,6 +1611,13 @@
             </div>
 
             <div class="analysis-card">
+              <h3>번호별 같이 나오는 특징</h3>
+              <div class="conditional-list">
+                ${makeConditionalPatternCards(dataItems, topNumbers.slice(0, 6))}
+              </div>
+            </div>
+
+            <div class="analysis-card">
               <h3>연번 나온 회차</h3>
               <div class="position-list">
                 ${
@@ -1487,6 +1648,8 @@
       block.innerHTML = `
         <div class="block-title">${baseRound}회 기준 100회귀 전체 흐름</div>
 
+        ${makePatternGuide()}
+
         <table>
           <thead>
             <tr>
@@ -1509,7 +1672,10 @@
         </table>
       `;
 
-      document.getElementById("result").appendChild(block);
+      const resultEl = document.getElementById("result");
+
+      resultEl.innerHTML = "";
+      resultEl.appendChild(block);
     }
 
     function makeCycleRow(item, baseRound) {
@@ -1535,7 +1701,7 @@
       const numbersHtml = row.numbers
         .map((num) => `
           <td>
-            <span class="num">${num}</span>
+            <span class="num ${getPatternClass(num)}">${num}</span>
           </td>
         `)
         .join("");
@@ -1610,6 +1776,253 @@
           `;
         })
         .join("");
+    }
+
+    function makeConditionalPatternCards(dataItems, topNumbers) {
+      if (!topNumbers.length) {
+        return `
+          <div class="conditional-card">
+            <strong class="conditional-card-title">없음</strong>
+            <div class="conditional-detail">
+              <span>분석할 번호가 없습니다.</span>
+            </div>
+          </div>
+        `;
+      }
+
+      return topNumbers
+        .map(([targetNumber, targetCount]) => {
+          const pattern = analyzeConditionalPattern(dataItems, Number(targetNumber));
+
+          return `
+            <div class="conditional-card" data-pattern-number="${targetNumber}" onclick="selectConditionalPattern(${targetNumber})">
+              <strong class="conditional-card-title">${targetNumber}번 출현 ${targetCount}회 기준</strong>
+              <div class="conditional-detail">
+                <span><b>같이 나온 번호:</b> ${pattern.numbers}</span>
+                <span><b>같이 나온 끝수:</b> ${pattern.endings}</span>
+                <span><b>같이 나온 궁수:</b> ${pattern.gungs}</span>
+                <span><b>같이 나온 세로:</b> ${pattern.verticals}</span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function analyzeConditionalPattern(dataItems, targetNumber) {
+      const relatedNumberFreq = new Map();
+      const relatedEndingFreq = new Map();
+      const relatedGungFreq = new Map();
+      const relatedVerticalFreq = new Map();
+
+      const matchedDraws = dataItems.filter((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        return numbers.includes(targetNumber);
+      });
+
+      matchedDraws.forEach((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        numbers.forEach((num) => {
+          if (Number(num) === Number(targetNumber)) {
+            return;
+          }
+
+          addCount(relatedNumberFreq, num);
+          addCount(relatedEndingFreq, num % 10);
+          addCount(relatedGungFreq, getGroupName(num, GUNG_GROUPS));
+          addCount(relatedVerticalFreq, getGroupName(num, VERTICAL_GROUPS));
+        });
+      });
+
+      return {
+        numbers: formatTopEntries(relatedNumberFreq, 5, (num, count) => `${num}번 ${count}회`),
+        endings: formatTopEntries(relatedEndingFreq, 4, (ending, count) => `${ending}끝 ${count}회`),
+        gungs: formatTopEntries(relatedGungFreq, 4, (gung, count) => `${gung} ${count}회`),
+        verticals: formatTopEntries(relatedVerticalFreq, 4, (vertical, count) => `${vertical} ${count}회`),
+      };
+    }
+
+    function selectConditionalPattern(targetNumber) {
+      if (!CURRENT_CYCLE_STATE) {
+        return;
+      }
+
+      const pattern = buildPatternForHighlight(
+        CURRENT_CYCLE_STATE.dataItems,
+        Number(targetNumber)
+      );
+
+      pattern.viewMode = "number";
+      ACTIVE_PATTERN = pattern;
+
+      document.querySelectorAll(".conditional-card").forEach((card) => {
+        const cardNumber = Number(card.dataset.patternNumber);
+
+        if (cardNumber === Number(targetNumber)) {
+          card.classList.add("is-active");
+        } else {
+          card.classList.remove("is-active");
+        }
+      });
+
+      renderCycleTable({
+        baseRound: CURRENT_CYCLE_STATE.baseRound,
+        cycleItems: CURRENT_CYCLE_STATE.cycleItems,
+      });
+
+      const resultEl = document.getElementById("result");
+
+      if (resultEl) {
+        resultEl.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+
+    function buildPatternForHighlight(dataItems, targetNumber) {
+      const relatedNumberFreq = new Map();
+      const relatedEndingFreq = new Map();
+      const relatedGungFreq = new Map();
+      const relatedVerticalFreq = new Map();
+
+      const matchedDraws = dataItems.filter((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        return numbers.includes(targetNumber);
+      });
+
+      matchedDraws.forEach((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        numbers.forEach((num) => {
+          if (Number(num) === Number(targetNumber)) {
+            return;
+          }
+
+          addCount(relatedNumberFreq, num);
+          addCount(relatedEndingFreq, num % 10);
+          addCount(relatedGungFreq, getGroupName(num, GUNG_GROUPS));
+          addCount(relatedVerticalFreq, getGroupName(num, VERTICAL_GROUPS));
+        });
+      });
+
+      return {
+        targetNumber,
+        viewMode: "number",
+        relatedNumbers: sortMapEntries(relatedNumberFreq).slice(0, 5).map(([num]) => Number(num)),
+        relatedEndings: sortMapEntries(relatedEndingFreq).slice(0, 4).map(([ending]) => Number(ending)),
+        relatedGungs: sortMapEntries(relatedGungFreq).slice(0, 4).map(([gung]) => gung),
+        relatedVerticals: sortMapEntries(relatedVerticalFreq).slice(0, 4).map(([vertical]) => vertical),
+      };
+    }
+
+    function setPatternView(mode) {
+      if (!ACTIVE_PATTERN || !CURRENT_CYCLE_STATE) {
+        return;
+      }
+
+      ACTIVE_PATTERN.viewMode = mode;
+
+      renderCycleTable({
+        baseRound: CURRENT_CYCLE_STATE.baseRound,
+        cycleItems: CURRENT_CYCLE_STATE.cycleItems,
+      });
+    }
+
+    function getPatternClass(num) {
+      if (!ACTIVE_PATTERN || ACTIVE_PATTERN.viewMode === "off") {
+        return "";
+      }
+
+      if (Number(num) === Number(ACTIVE_PATTERN.targetNumber)) {
+        return "";
+      }
+
+      if (
+        ACTIVE_PATTERN.viewMode === "number" &&
+        ACTIVE_PATTERN.relatedNumbers.includes(Number(num))
+      ) {
+        return "pattern-number";
+      }
+
+      if (
+        ACTIVE_PATTERN.viewMode === "ending" &&
+        ACTIVE_PATTERN.relatedEndings.includes(Number(num) % 10)
+      ) {
+        return "pattern-ending";
+      }
+
+      if (
+        ACTIVE_PATTERN.viewMode === "gung" &&
+        ACTIVE_PATTERN.relatedGungs.includes(getGroupName(num, GUNG_GROUPS))
+      ) {
+        return "pattern-gung";
+      }
+
+      if (
+        ACTIVE_PATTERN.viewMode === "vertical" &&
+        ACTIVE_PATTERN.relatedVerticals.includes(getGroupName(num, VERTICAL_GROUPS))
+      ) {
+        return "pattern-vertical";
+      }
+
+      return "";
+    }
+
+    function makePatternGuide() {
+      if (!ACTIVE_PATTERN) {
+        return `
+          <div class="small">
+            번호별 같이 나오는 특징 카드를 클릭하면, 이 표에서 같이 나온 번호 / 끝수 / 궁수 / 세로를 따로 선택해서 볼 수 있습니다.
+          </div>
+        `;
+      }
+
+      const mode = ACTIVE_PATTERN.viewMode || "number";
+
+      return `
+        <div class="pattern-panel">
+          <div class="pattern-title">
+            ${ACTIVE_PATTERN.targetNumber}번 기준 패턴 보기
+            <span class="small">선택번호 자체는 표시하지 않고, 같이 나온 패턴만 표시합니다.</span>
+          </div>
+
+          <div class="pattern-buttons">
+            <button type="button" class="pattern-btn ${mode === "number" ? "is-active" : ""}" onclick="setPatternView('number')">
+              같이 나온 번호
+            </button>
+
+            <button type="button" class="pattern-btn ${mode === "ending" ? "is-active" : ""}" onclick="setPatternView('ending')">
+              같이 나온 끝수
+            </button>
+
+            <button type="button" class="pattern-btn ${mode === "gung" ? "is-active" : ""}" onclick="setPatternView('gung')">
+              같이 나온 궁수
+            </button>
+
+            <button type="button" class="pattern-btn ${mode === "vertical" ? "is-active" : ""}" onclick="setPatternView('vertical')">
+              같이 나온 세로
+            </button>
+
+            <button type="button" class="pattern-btn off-btn ${mode === "off" ? "is-active" : ""}" onclick="setPatternView('off')">
+              표시 끄기
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function formatTopEntries(map, limit, formatter) {
+      const entries = sortMapEntries(map).slice(0, limit);
+
+      if (!entries.length) {
+        return "-";
+      }
+
+      return entries.map(([key, count]) => formatter(key, count)).join(" / ");
     }
 
     function getConsecutivePairs(numbers) {
