@@ -1611,7 +1611,7 @@
             </div>
 
             <div class="analysis-card">
-              <h3>번호별 같이 나오는 특징</h3>
+              <h3>번호별 다음 100회차 특징</h3>
               <div class="conditional-list">
                 ${makeConditionalPatternCards(dataItems, topNumbers.slice(0, 6))}
               </div>
@@ -1701,7 +1701,7 @@
       const numbersHtml = row.numbers
         .map((num) => `
           <td>
-            <span class="num ${getPatternClass(num)}">${num}</span>
+            <span class="num ${getPatternClass(num, row.round)}">${num}</span>
           </td>
         `)
         .join("");
@@ -1716,7 +1716,6 @@
         </tr>
       `;
     }
-
     function addCount(map, key) {
       map.set(key, (map.get(key) || 0) + 1);
     }
@@ -1778,6 +1777,89 @@
         .join("");
     }
 
+    function getNextHundredPatternData(dataItems, targetNumber) {
+      const dataRoundMap = new Map(
+        dataItems.map((draw) => [Number(draw.round), draw])
+      );
+
+      const relatedNumberFreq = new Map();
+      const relatedEndingFreq = new Map();
+      const relatedGungFreq = new Map();
+      const relatedVerticalFreq = new Map();
+      const targetRounds = [];
+      const pairs = [];
+
+      dataItems.forEach((draw) => {
+        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+
+        if (!numbers.includes(Number(targetNumber))) {
+          return;
+        }
+
+        const originRound = Number(draw.round);
+        const targetRound = originRound + 100;
+        const targetDraw = dataRoundMap.get(targetRound);
+
+        if (!targetDraw || !Array.isArray(targetDraw.numbers)) {
+          pairs.push({
+            originRound,
+            targetRound,
+            hasData: false,
+          });
+
+          return;
+        }
+
+        pairs.push({
+          originRound,
+          targetRound,
+          hasData: true,
+        });
+
+        targetRounds.push(targetRound);
+
+        targetDraw.numbers.forEach((num) => {
+          if (Number(num) === Number(targetNumber)) {
+            return;
+          }
+
+          addCount(relatedNumberFreq, num);
+          addCount(relatedEndingFreq, num % 10);
+          addCount(relatedGungFreq, getGroupName(num, GUNG_GROUPS));
+          addCount(relatedVerticalFreq, getGroupName(num, VERTICAL_GROUPS));
+        });
+      });
+
+      return {
+        relatedNumberFreq,
+        relatedEndingFreq,
+        relatedGungFreq,
+        relatedVerticalFreq,
+        targetRounds,
+        pairs,
+      };
+    }
+
+    function formatNextHundredPairs(pairs, limit = 6) {
+      if (!pairs.length) {
+        return "-";
+      }
+
+      const visiblePairs = pairs.slice(0, limit).map((pair) => {
+        if (pair.hasData) {
+          return `${pair.originRound}→${pair.targetRound}`;
+        }
+
+        return `${pair.originRound}→${pair.targetRound}(자료 없음)`;
+      });
+
+      if (pairs.length > limit) {
+        visiblePairs.push(`외 ${pairs.length - limit}개`);
+      }
+
+      return visiblePairs.join(" / ");
+    }
+
     function makeConditionalPatternCards(dataItems, topNumbers) {
       if (!topNumbers.length) {
         return `
@@ -1798,52 +1880,28 @@
             <div class="conditional-card" data-pattern-number="${targetNumber}" onclick="selectConditionalPattern(${targetNumber})">
               <strong class="conditional-card-title">${targetNumber}번 출현 ${targetCount}회 기준</strong>
               <div class="conditional-detail">
-                <span><b>같이 나온 번호:</b> ${pattern.numbers}</span>
-                <span><b>같이 나온 끝수:</b> ${pattern.endings}</span>
-                <span><b>같이 나온 궁수:</b> ${pattern.gungs}</span>
-                <span><b>같이 나온 세로:</b> ${pattern.verticals}</span>
+                <span><b>다음 100회차:</b> ${pattern.pairs}</span>
+                <span><b>나온 번호:</b> ${pattern.numbers}</span>
+                <span><b>나온 끝수:</b> ${pattern.endings}</span>
+                <span><b>나온 궁수:</b> ${pattern.gungs}</span>
+                <span><b>나온 세로:</b> ${pattern.verticals}</span>
               </div>
             </div>
           `;
         })
         .join("");
     }
-
     function analyzeConditionalPattern(dataItems, targetNumber) {
-      const relatedNumberFreq = new Map();
-      const relatedEndingFreq = new Map();
-      const relatedGungFreq = new Map();
-      const relatedVerticalFreq = new Map();
-
-      const matchedDraws = dataItems.filter((draw) => {
-        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
-
-        return numbers.includes(targetNumber);
-      });
-
-      matchedDraws.forEach((draw) => {
-        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
-
-        numbers.forEach((num) => {
-          if (Number(num) === Number(targetNumber)) {
-            return;
-          }
-
-          addCount(relatedNumberFreq, num);
-          addCount(relatedEndingFreq, num % 10);
-          addCount(relatedGungFreq, getGroupName(num, GUNG_GROUPS));
-          addCount(relatedVerticalFreq, getGroupName(num, VERTICAL_GROUPS));
-        });
-      });
+      const patternData = getNextHundredPatternData(dataItems, targetNumber);
 
       return {
-        numbers: formatTopEntries(relatedNumberFreq, 5, (num, count) => `${num}번 ${count}회`),
-        endings: formatTopEntries(relatedEndingFreq, 4, (ending, count) => `${ending}끝 ${count}회`),
-        gungs: formatTopEntries(relatedGungFreq, 4, (gung, count) => `${gung} ${count}회`),
-        verticals: formatTopEntries(relatedVerticalFreq, 4, (vertical, count) => `${vertical} ${count}회`),
+        pairs: formatNextHundredPairs(patternData.pairs),
+        numbers: formatTopEntries(patternData.relatedNumberFreq, 5, (num, count) => `${num}번 ${count}회`),
+        endings: formatTopEntries(patternData.relatedEndingFreq, 4, (ending, count) => `${ending}끝 ${count}회`),
+        gungs: formatTopEntries(patternData.relatedGungFreq, 4, (gung, count) => `${gung} ${count}회`),
+        verticals: formatTopEntries(patternData.relatedVerticalFreq, 4, (vertical, count) => `${vertical} ${count}회`),
       };
     }
-
     function selectConditionalPattern(targetNumber) {
       if (!CURRENT_CYCLE_STATE) {
         return;
@@ -1883,42 +1941,18 @@
     }
 
     function buildPatternForHighlight(dataItems, targetNumber) {
-      const relatedNumberFreq = new Map();
-      const relatedEndingFreq = new Map();
-      const relatedGungFreq = new Map();
-      const relatedVerticalFreq = new Map();
-
-      const matchedDraws = dataItems.filter((draw) => {
-        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
-
-        return numbers.includes(targetNumber);
-      });
-
-      matchedDraws.forEach((draw) => {
-        const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
-
-        numbers.forEach((num) => {
-          if (Number(num) === Number(targetNumber)) {
-            return;
-          }
-
-          addCount(relatedNumberFreq, num);
-          addCount(relatedEndingFreq, num % 10);
-          addCount(relatedGungFreq, getGroupName(num, GUNG_GROUPS));
-          addCount(relatedVerticalFreq, getGroupName(num, VERTICAL_GROUPS));
-        });
-      });
+      const patternData = getNextHundredPatternData(dataItems, targetNumber);
 
       return {
         targetNumber,
         viewMode: "number",
-        relatedNumbers: sortMapEntries(relatedNumberFreq).slice(0, 5).map(([num]) => Number(num)),
-        relatedEndings: sortMapEntries(relatedEndingFreq).slice(0, 4).map(([ending]) => Number(ending)),
-        relatedGungs: sortMapEntries(relatedGungFreq).slice(0, 4).map(([gung]) => gung),
-        relatedVerticals: sortMapEntries(relatedVerticalFreq).slice(0, 4).map(([vertical]) => vertical),
+        targetRounds: patternData.targetRounds,
+        relatedNumbers: sortMapEntries(patternData.relatedNumberFreq).slice(0, 5).map(([num]) => Number(num)),
+        relatedEndings: sortMapEntries(patternData.relatedEndingFreq).slice(0, 4).map(([ending]) => Number(ending)),
+        relatedGungs: sortMapEntries(patternData.relatedGungFreq).slice(0, 4).map(([gung]) => gung),
+        relatedVerticals: sortMapEntries(patternData.relatedVerticalFreq).slice(0, 4).map(([vertical]) => vertical),
       };
     }
-
     function setPatternView(mode) {
       if (!ACTIVE_PATTERN || !CURRENT_CYCLE_STATE) {
         return;
@@ -1932,8 +1966,12 @@
       });
     }
 
-    function getPatternClass(num) {
+    function getPatternClass(num, round) {
       if (!ACTIVE_PATTERN || ACTIVE_PATTERN.viewMode === "off") {
+        return "";
+      }
+
+      if (!ACTIVE_PATTERN.targetRounds.includes(Number(round))) {
         return "";
       }
 
@@ -1971,12 +2009,11 @@
 
       return "";
     }
-
     function makePatternGuide() {
       if (!ACTIVE_PATTERN) {
         return `
           <div class="small">
-            번호별 같이 나오는 특징 카드를 클릭하면, 이 표에서 같이 나온 번호 / 끝수 / 궁수 / 세로를 따로 선택해서 볼 수 있습니다.
+            번호별 다음 100회차 특징 카드를 클릭하면, 이 표에서 다음 100회차에 나온 번호 / 끝수 / 궁수 / 세로를 따로 선택해서 볼 수 있습니다.
           </div>
         `;
       }
@@ -1986,25 +2023,25 @@
       return `
         <div class="pattern-panel">
           <div class="pattern-title">
-            ${ACTIVE_PATTERN.targetNumber}번 기준 패턴 보기
-            <span class="small">선택번호 자체는 표시하지 않고, 같이 나온 패턴만 표시합니다.</span>
+            ${ACTIVE_PATTERN.targetNumber}번 출현 후 다음 100회차 패턴 보기
+            <span class="small">선택번호가 나온 회차가 아니라, 그 다음 100회차에서 나온 패턴만 표시합니다.</span>
           </div>
 
           <div class="pattern-buttons">
             <button type="button" class="pattern-btn ${mode === "number" ? "is-active" : ""}" onclick="setPatternView('number')">
-              같이 나온 번호
+              다음 100회차 번호
             </button>
 
             <button type="button" class="pattern-btn ${mode === "ending" ? "is-active" : ""}" onclick="setPatternView('ending')">
-              같이 나온 끝수
+              다음 100회차 끝수
             </button>
 
             <button type="button" class="pattern-btn ${mode === "gung" ? "is-active" : ""}" onclick="setPatternView('gung')">
-              같이 나온 궁수
+              다음 100회차 궁수
             </button>
 
             <button type="button" class="pattern-btn ${mode === "vertical" ? "is-active" : ""}" onclick="setPatternView('vertical')">
-              같이 나온 세로
+              다음 100회차 세로
             </button>
 
             <button type="button" class="pattern-btn off-btn ${mode === "off" ? "is-active" : ""}" onclick="setPatternView('off')">
@@ -2014,7 +2051,6 @@
         </div>
       `;
     }
-
     function formatTopEntries(map, limit, formatter) {
       const entries = sortMapEntries(map).slice(0, limit);
 
