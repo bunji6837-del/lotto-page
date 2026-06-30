@@ -701,7 +701,7 @@
       <div class="search-title">
         <div>
           <h2>숫자 동시 출현 검색</h2>
-          <p>입력한 숫자들이 1등 당첨번호 6개 안에 같이 나온 회차를 찾습니다. 보너스 번호는 제외됩니다.</p>
+          <p>입력한 숫자들이 1등 당첨번호 6개 또는 보너스 번호에 같이 나온 회차를 찾습니다.</p>
         </div>
         <span class="badge">2~4개 검색</span>
       </div>
@@ -1116,11 +1116,11 @@
       const hits = LOTTO_DRAWS.filter((item) => {
         const nums = item.numbers || [];
 
-        return searchNumbers.every((num) => nums.includes(num));
+        return searchNumbers.every((num) => nums.includes(num) || Number(item.bonus) === Number(num));
       });
 
       setStatus(
-        `${searchNumbers.join(", ")}가 1등 번호에 같이 나온 회차: ${hits.length}개`,
+        `${searchNumbers.join(", ")}가 1등 번호 또는 보너스에 같이 나온 회차: ${hits.length}개`,
         false
       );
 
@@ -1134,7 +1134,7 @@
         result.innerHTML = `
           <div class="block">
             <strong>검색 결과 없음</strong>
-            <div class="small">보너스 번호는 검색 대상에서 제외했습니다.</div>
+            <div class="small">1등 번호와 보너스 번호까지 포함해서 검색했습니다.</div>
           </div>
         `;
         return;
@@ -2161,10 +2161,18 @@
 
       const isBonusMatched =
         isHit &&
-        context.mode === "fixed" &&
-        context.filters.bonus !== null &&
-        context.filters.bonus !== "" &&
-        Number(context.filters.bonus) === Number(row.bonus);
+        (
+          (
+            context.mode === "combo" &&
+            context.searchNumbers.includes(Number(row.bonus))
+          ) ||
+          (
+            context.mode === "fixed" &&
+            context.filters.bonus !== null &&
+            context.filters.bonus !== "" &&
+            Number(context.filters.bonus) === Number(row.bonus)
+          )
+        );
 
       let note = "";
 
