@@ -691,7 +691,7 @@
     <section class="top">
       <h1>로또 번호 흐름 분석</h1>
       <p class="desc">
-        숫자 <strong>2개부터 4개까지</strong> 입력해서 같이 나온 회차를 찾거나,
+        숫자 <strong>1개부터 4개까지</strong> 입력해서 같이 나온 회차를 찾거나,
         <strong>1구~6구 / 보볼</strong> 자리를 고정해서 특정 자리 조건에 맞는 회차를 찾을 수 있습니다.
         추가로 <strong>100회귀별 보기</strong>를 통해 같은 끝 두 자리 회차 흐름과 자동 분석을 확인할 수 있습니다.
       </p>
@@ -703,7 +703,7 @@
           <h2>숫자 동시 출현 검색</h2>
           <p>입력한 숫자들이 1등 당첨번호 6개 또는 보너스 번호에 같이 나온 회차를 찾습니다.</p>
         </div>
-        <span class="badge">2~4개 검색</span>
+        <span class="badge">1~4개 검색</span>
       </div>
 
       <div class="search-box">
@@ -1024,7 +1024,7 @@
 
     function isValidComboNumbers(numbers) {
       if (!Array.isArray(numbers)) return false;
-      if (numbers.length < 2 || numbers.length > 4) return false;
+      if (numbers.length < 1 || numbers.length > 4) return false;
       if (!numbers.every(validateNumber)) return false;
 
       const unique = new Set(numbers);
@@ -1084,8 +1084,8 @@
         return;
       }
 
-      if (inputNumbers.length < 2) {
-        setStatus("숫자는 최소 2개 이상 입력해야 합니다.", true);
+      if (inputNumbers.length < 1) {
+        setStatus("숫자는 최소 1개 이상 입력해야 합니다.", true);
         return;
       }
 
@@ -1367,6 +1367,8 @@
 
       const dataItems = cycleItems.filter((item) => item.draw).map((item) => item.draw);
       const latestRound = getLatestRound();
+      const baseDraw = LOTTO_MAP.get(baseRound) || null;
+      const referenceDraw = baseDraw || dataItems[dataItems.length - 1] || null;
 
       ACTIVE_PATTERN = null;
 
@@ -1374,6 +1376,7 @@
         baseRound,
         cycleItems,
         dataItems,
+        referenceDraw,
       };
 
       setStatus(
@@ -1391,6 +1394,8 @@
       renderCycleAnalysis({
         baseRound,
         dataItems,
+        referenceDraw,
+        isBaseRoundAvailable: Boolean(baseDraw),
       });
 
       renderCycleTable({
@@ -1493,7 +1498,7 @@
       `;
     }
 
-    function renderCycleAnalysis({ baseRound, dataItems }) {
+    function renderCycleAnalysis({ baseRound, dataItems, referenceDraw, isBaseRoundAvailable }) {
       const analysisBox = document.getElementById("analysis");
 
       if (!dataItems.length) {
@@ -1547,6 +1552,20 @@
       const topGungs = sortMapEntries(gungFreq).slice(0, 9);
       const topVerticals = sortMapEntries(verticalFreq).slice(0, 7);
       const topBonus = sortMapEntries(bonusFreq).slice(0, 8);
+      const focusTargets = getCycleFocusTargets(referenceDraw);
+      const referenceRound = referenceDraw ? Number(referenceDraw.round) : null;
+      const referenceNumbersText =
+        referenceDraw && Array.isArray(referenceDraw.numbers)
+          ? `${referenceDraw.numbers.join(", ")}${referenceDraw.bonus ? ` / 보볼 ${referenceDraw.bonus}` : ""}`
+          : "-";
+      const referencePatternTitle = referenceRound
+        ? `${referenceRound}회 번호 기준 다음 100회차 특징`
+        : "기준 번호별 다음 100회차 특징";
+      const referencePatternDesc = referenceRound
+        ? isBaseRoundAvailable
+          ? `${baseRound}회 번호 ${referenceNumbersText}를 기준으로, 같은 끝 두 자리 회차의 다음 100회차 흐름을 정리했습니다.`
+          : `${baseRound}회 데이터가 아직 없어서 ${referenceRound}회 번호 ${referenceNumbersText}를 기준으로 다음 100회차 패턴을 계산했습니다.`
+        : "기준 번호 데이터가 없어 다음 100회차 패턴 카드를 만들 수 없습니다.";
 
       analysisBox.innerHTML = `
         <section class="analysis">
@@ -1611,9 +1630,10 @@
             </div>
 
             <div class="analysis-card">
-              <h3>번호별 다음 100회차 특징</h3>
+              <h3>${referencePatternTitle}</h3>
+              <div class="small">${referencePatternDesc}</div>
               <div class="conditional-list">
-                ${makeConditionalPatternCards(dataItems, topNumbers.slice(0, 6))}
+                ${makeConditionalPatternCards(dataItems, focusTargets)}
               </div>
             </div>
 
@@ -1791,8 +1811,9 @@
 
       dataItems.forEach((draw) => {
         const numbers = Array.isArray(draw.numbers) ? draw.numbers : [];
+        const bonus = Number(draw.bonus);
 
-        if (!numbers.includes(Number(targetNumber))) {
+        if (!numbers.includes(Number(targetNumber)) && bonus !== Number(targetNumber)) {
           return;
         }
 
@@ -1840,6 +1861,26 @@
       };
     }
 
+    function getCycleFocusTargets(referenceDraw) {
+      if (!referenceDraw || !Array.isArray(referenceDraw.numbers)) {
+        return [];
+      }
+
+      const targets = referenceDraw.numbers.map((num, index) => ({
+        number: Number(num),
+        label: `${POSITION_LABELS[index]} ${num}번`,
+      }));
+
+      if (validateNumber(referenceDraw.bonus)) {
+        targets.push({
+          number: Number(referenceDraw.bonus),
+          label: `보볼 ${referenceDraw.bonus}번`,
+        });
+      }
+
+      return targets;
+    }
+
     function formatNextHundredPairs(pairs, limit = 6) {
       if (!pairs.length) {
         return "-";
@@ -1860,8 +1901,8 @@
       return visiblePairs.join(" / ");
     }
 
-    function makeConditionalPatternCards(dataItems, topNumbers) {
-      if (!topNumbers.length) {
+    function makeConditionalPatternCards(dataItems, targets) {
+      if (!targets.length) {
         return `
           <div class="conditional-card">
             <strong class="conditional-card-title">없음</strong>
@@ -1872,13 +1913,13 @@
         `;
       }
 
-      return topNumbers
-        .map(([targetNumber, targetCount]) => {
-          const pattern = analyzeConditionalPattern(dataItems, Number(targetNumber));
+      return targets
+        .map(({ number, label }) => {
+          const pattern = analyzeConditionalPattern(dataItems, Number(number));
 
           return `
-            <div class="conditional-card" data-pattern-number="${targetNumber}" onclick="selectConditionalPattern(${targetNumber})">
-              <strong class="conditional-card-title">${targetNumber}번 출현 ${targetCount}회 기준</strong>
+            <div class="conditional-card" data-pattern-number="${number}" onclick="selectConditionalPattern(${number})">
+              <strong class="conditional-card-title">${label} 출현 ${pattern.originCount}회 기준</strong>
               <div class="conditional-detail">
                 <span><b>다음 100회차:</b> ${pattern.pairs}</span>
                 <span><b>나온 번호:</b> ${pattern.numbers}</span>
@@ -1895,6 +1936,7 @@
       const patternData = getNextHundredPatternData(dataItems, targetNumber);
 
       return {
+        originCount: patternData.pairs.length,
         pairs: formatNextHundredPairs(patternData.pairs),
         numbers: formatTopEntries(patternData.relatedNumberFreq, 5, (num, count) => `${num}번 ${count}회`),
         endings: formatTopEntries(patternData.relatedEndingFreq, 4, (ending, count) => `${ending}끝 ${count}회`),
