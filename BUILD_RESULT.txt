@@ -1,0 +1,3 @@
+npm install 완료
+npm run build 성공
+Vite production build 성공

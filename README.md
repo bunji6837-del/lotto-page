@@ -1,16 +1,50 @@
-# React + Vite
+# 기존 기능 보존 수정본
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+이번 수정본은 처음 올린 원본 `App.jsx`와 `App.css`를 기준으로 만들었습니다.
 
-Currently, two official plugins are available:
+유지된 기능:
+- Ctrl + V 캡처 붙여넣기
+- 카드 드래그
+- 카드 위치 맞교환
+- 저장/수정 상태 전환
+- 자동 정렬
+- 회차 검색
+- 개별 삭제
+- 전체 삭제
+- 기존 메모장과 자동 저장
+- 확인창과 PC 알림
+- 기존 Supabase 데이터 및 x/y/z_index
+- 표 페이지 이동
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+추가된 기능:
+- 아이디 로그인
+- 로그인 사용자만 추가·수정·삭제
+- 사진 선택 업로드
+- 모바일 카메라 촬영
+- 모바일 자동 그리드
+- 확대 화면 이전/다음
+- 키보드 좌우 방향키
+- 모바일 좌우 스와이프
+- 점 3개 메뉴의 상세 정보
 
-## React Compiler
+## 관리자 계정 생성
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Supabase Dashboard에서:
 
-## Expanding the ESLint configuration
+Authentication → Users → Add user
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Email:
+`hoony6837@lotto.local`
+
+Password:
+사용자가 지정한 관리자 비밀번호
+
+웹페이지 로그인창에서는 아이디 `hoony6837`을 사용합니다.
+
+## 적용
+
+1. `supabase.sql`을 SQL Editor에서 한 번 실행
+2. `npm install`
+3. `npm run dev`
+4. 확인 후 `npm run build`
+5. 생성된 docs 폴더까지 GitHub에 업로드
