@@ -19,7 +19,15 @@ function getExtension(file) {
   if (type.includes("png")) return "png";
   if (type.includes("webp")) return "webp";
   if (type.includes("gif")) return "gif";
-  return "png";
+  if (type.includes("mp4")) return "mp4";
+  if (type.includes("webm")) return "webm";
+  if (type.includes("quicktime")) return "mov";
+  if (type.includes("ogg")) return "ogv";
+  return "bin";
+}
+
+function isVideo(file) {
+  return file.type.startsWith("video/");
 }
 
 function formatDate(value) {
@@ -34,6 +42,7 @@ function normalizePhoto(row) {
     filePath: row.file_path,
     memo: row.memo || "",
     createdAt: row.created_at,
+    mediaType: row.media_type || "image",
     signedUrl: "",
   };
 }
@@ -175,8 +184,8 @@ export default function AdminPrivatePage() {
         return;
       }
 
-      const files = Array.from(fileList || []).filter((file) =>
-        file.type.startsWith("image/")
+      const files = Array.from(fileList || []).filter(
+        (file) => file.type.startsWith("image/") || isVideo(file)
       );
 
       if (!files.length) return;
@@ -205,6 +214,7 @@ export default function AdminPrivatePage() {
               owner_id: session.user.id,
               file_path: filePath,
               memo: "",
+              media_type: isVideo(file) ? "video" : "image",
             })
             .select()
             .single();
@@ -424,7 +434,7 @@ export default function AdminPrivatePage() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
+          accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg"
           multiple
           hidden
           onChange={(event) => uploadFiles(event.target.files)}
@@ -433,7 +443,7 @@ export default function AdminPrivatePage() {
         <input
           ref={cameraInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,video/*"
           capture="environment"
           hidden
           onChange={(event) => uploadFiles(event.target.files)}
@@ -492,11 +502,20 @@ export default function AdminPrivatePage() {
                 onClick={() => setSelectedId(photo.id)}
               >
                 {photo.signedUrl ? (
-                  <img
-                    src={photo.signedUrl}
-                    alt="개인 저장 사진"
-                    loading="lazy"
-                  />
+                  photo.mediaType === "video" ? (
+                    <video
+                      src={photo.signedUrl}
+                      preload="metadata"
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={photo.signedUrl}
+                      alt="개인 저장 사진"
+                      loading="lazy"
+                    />
+                  )
                 ) : (
                   <span>이미지를 불러오지 못했습니다.</span>
                 )}
@@ -504,6 +523,7 @@ export default function AdminPrivatePage() {
 
               <div className="private-photo-info">
                 <span>{formatDate(photo.createdAt)}</span>
+                <b>{photo.mediaType === "video" ? "영상" : "사진"}</b>
                 <p>{photo.memo || "메모 없음"}</p>
               </div>
 
@@ -560,7 +580,16 @@ export default function AdminPrivatePage() {
               }}
               onTouchEnd={handleTouchEnd}
             >
-              <img src={selectedPhoto.signedUrl} alt="개인 사진 확대" />
+              {selectedPhoto.mediaType === "video" ? (
+                <video
+                  src={selectedPhoto.signedUrl}
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <img src={selectedPhoto.signedUrl} alt="개인 사진 확대" />
+              )}
             </div>
 
             <button

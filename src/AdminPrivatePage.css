@@ -206,6 +206,15 @@
   object-fit: contain;
 }
 
+.private-image-button video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 15px;
+  background: #111722;
+  object-fit: contain;
+}
+
 .private-image-button span {
   color: #818999;
   font-size: 13px;
@@ -218,6 +227,16 @@
 .private-photo-info span {
   color: #8a91a0;
   font-size: 12px;
+}
+
+.private-photo-info b {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #eeeaff;
+  color: #6249e6;
+  font-size: 11px;
 }
 
 .private-photo-info p {
@@ -316,12 +335,18 @@
   touch-action: pan-y;
 }
 
-.private-viewer-image img {
+.private-viewer-image img,
+.private-viewer-image video {
   max-width: 100%;
   max-height: calc(96vh - 150px);
   object-fit: contain;
   background: #fff;
   border-radius: 10px;
+}
+
+.private-viewer-image video {
+  width: min(100%, 1000px);
+  background: #000;
 }
 
 .private-viewer-arrow {
@@ -510,7 +535,8 @@
     padding: 10px 8px 70px;
   }
 
-  .private-viewer-image img {
+  .private-viewer-image img,
+  .private-viewer-image video {
     max-height: calc(100vh - 150px);
   }
 

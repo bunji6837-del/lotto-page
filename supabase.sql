@@ -84,6 +84,11 @@ create table if not exists public.admin_private_photos (
   created_at timestamptz not null default now()
 );
 
+-- Existing installations also need this column before video uploads are used.
+alter table public.admin_private_photos
+add column if not exists media_type text not null default 'image'
+check (media_type in ('image', 'video'));
+
 create index if not exists admin_private_photos_owner_created_idx
 on public.admin_private_photos (owner_id, created_at desc);
 
@@ -140,14 +145,14 @@ values (
   'admin-private-photos',
   'admin-private-photos',
   false,
-  52428800,
-  array['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+  524288000,
+  array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime', 'video/ogg']
 )
 on conflict (id)
 do update set
   public = false,
-  file_size_limit = 52428800,
-  allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+  file_size_limit = 524288000,
+  allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
 
 drop policy if exists "admin_private_storage_select_own" on storage.objects;
 drop policy if exists "admin_private_storage_insert_own" on storage.objects;
