@@ -506,7 +506,6 @@ export default function AdminPrivatePage() {
                     <video
                       src={photo.signedUrl}
                       preload="metadata"
-                      muted
                       playsInline
                     />
                   ) : (
@@ -582,10 +581,17 @@ export default function AdminPrivatePage() {
             >
               {selectedPhoto.mediaType === "video" ? (
                 <video
+                  key={selectedPhoto.id}
                   src={selectedPhoto.signedUrl}
                   controls
-                  autoPlay
                   playsInline
+                  preload="metadata"
+                  onLoadedMetadata={(event) => {
+                    // Mobile browsers only permit audible playback after a user action.
+                    event.currentTarget.muted = false;
+                    event.currentTarget.defaultMuted = false;
+                    event.currentTarget.volume = 1;
+                  }}
                 />
               ) : (
                 <img src={selectedPhoto.signedUrl} alt="개인 사진 확대" />
