@@ -910,11 +910,10 @@
     }
 
     function getLatestRound() {
-      if (META?.latestRound) return Number(META.latestRound);
-
-      if (!LOTTO_DRAWS.length) return 0;
-
-      return Math.max(...LOTTO_DRAWS.map((item) => Number(item.round)));
+      return LOTTO_DRAWS.reduce((latestRound, item) => {
+        const round = Number(item.round);
+        return Number.isFinite(round) ? Math.max(latestRound, round) : latestRound;
+      }, 0);
     }
 
     function restoreLastSearch() {
